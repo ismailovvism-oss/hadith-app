@@ -176,7 +176,7 @@ function home(){bar('Библиотека хадисов',null);
  const arts=CFG.articles.length?`<h2 class="sec">Ясный шарх</h2><ul class="list">${CFG.articles.map(a=>`<li><a href="#/${a.k.split('-')[0]}/${a.b}/${a.n}"><span class="t">${esc(a.t)}</span><span class="c">№ ${a.n}</span></a></li>`).join('')}</ul>`:'';
  view.innerHTML=`<section class="hero"><p class="v" lang="ar" dir="rtl">مكتبة الحديث</p><h2>Библиотека хадисов</h2><p>Перевод, передатчики и живое объяснение. Нажмите на имя в цепочке, и откроется, кто этот человек и что он передал.</p></section>
  <form class="sf" id="sf"><input type="search" name="q" placeholder="Слово из хадиса или имя передатчика" aria-label="Поиск"><button class="ib" aria-label="Найти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button></form>
- ${shelves}${arts}<p class="foot"><a href="#/about">О приложении и источниках</a></p>`}
+ ${shelves}${arts}<p class="foot"><a href="#/about">О приложении и источниках</a> · <a href="https://tawhiid.com" target="_blank" rel="noopener">Другие наши приложения</a></p>`}
 
 async function shelf(id){const c=CFG.collections.find(x=>x.id===id);bar(c.ru,'#/');
  const bs=await J(`data/${id}/books.json`);
@@ -291,7 +291,8 @@ function about(){bar('О приложении','#/');view.innerHTML=`<div class=
  <p><strong>Библиотека хадисов</strong> устроена как «Библиотека тафсиров»: хадис занимает место аята, а к нему подключаются источники. Выбрать их можно кнопкой настроек вверху.</p>
  <p><strong>Перевод и Ясный шарх</strong> наши. Перевод держится текста, шарх объясняет его живым языком по «Фатх аль-Бари» Ибн Хаджара и другим шархам. Работа идёт книга за книгой.</p>
  <p><strong>Арабский текст, цепочки и другие передачи:</strong> hadith.dev (جامع خادم الحرمين الشريفين).</p>
- <p><strong>Сведения о передатчиках:</strong> наша база по книгам риджаля.</p></div>`}
+ <p><strong>Сведения о передатчиках:</strong> наша база по книгам риджаля.</p>
+ <p><strong>Другие наши приложения и книги:</strong> <a href="https://tawhiid.com" target="_blank" rel="noopener">tawhiid.com</a></p></div>`}
 const notfound=()=>{view.innerHTML='<div class="empty">Такой страницы нет.<br><a class="btn" href="#/">На главную</a></div>'};
 
 /* Редактор. Пока один пользователь: доступ по коду, правки лежат в воркере синхронизации тафсиров.
