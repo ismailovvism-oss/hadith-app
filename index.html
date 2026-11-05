@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Библиотека хадисов</title>
+<meta name="description" content="Хадисы на русском: перевод, цепочки передатчиков с карточками, живое объяснение «Ясный шарх» и арабский текст.">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FAF8F5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1B1A17" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/app-icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/app-icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* Семья «Библиотеки тафсиров»: бумага и золото. Цвет только у слов хадиса и у оценки передатчика. */
+:root{--bg:#FAF8F5;--bg2:#F0EDE6;--card:#fff;--line:#E5E0D8;--fg:#2D2A26;--fg2:#5A5650;--fg3:#7E786B;
+--accent:#6d5415;--mark:#F6E7B4;--mark-line:#B08A1E;--g6:#2B6F7A;--g5:#3E7A45;--g4:#A9741A;--g3:#8F7A3C;--g2:#A5533A;--g0:#7E786B;
+--serif:"IBM Plex Serif",Georgia,serif;--sans:"IBM Plex Sans",system-ui,sans-serif;--ar:"Amiri","Noto Naskh Arabic",serif;--fs:18px}
+@media (prefers-color-scheme:dark){:root{--bg:#1B1A17;--bg2:#24221E;--card:#262420;--line:#38352E;--fg:#E8E3D8;--fg2:#B5AFA2;--fg3:#928C7F;
+--accent:#c9a84c;--mark:#4A3D14;--mark-line:#C9A84C;--g6:#6FB7C2;--g5:#83BC88;--g4:#D6A650;--g3:#C2AE6C;--g2:#D98E73;--g0:#928C7F;color-scheme:dark}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 var(--fs)/1.65 var(--serif);-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}button{font:inherit;color:inherit}
+.bar{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:4px;background:var(--bg);border-bottom:1px solid var(--line);
+padding:calc(6px + env(safe-area-inset-top,0px)) max(8px,env(safe-area-inset-right,0px)) 6px max(8px,env(safe-area-inset-left,0px))}
+.bar h1{flex:1;min-width:0;margin:0 4px;font:600 16px/1.3 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;background:none;border-radius:8px;color:var(--fg2);cursor:pointer;text-decoration:none}
+.ib:hover,.ib:focus-visible{background:var(--bg2);color:var(--fg)}.ib svg{width:22px;height:22px}
+.wrap{max-width:720px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right,0px)) 80px max(16px,env(safe-area-inset-left,0px))}
+.hero{padding:26px 0 18px}.hero .v{font:700 30px/1.3 var(--ar);color:var(--accent);margin:0}
+.hero h2{font:600 32px/1.2 var(--sans);margin:4px 0 8px;text-wrap:balance}
+.hero p{font:400 16px/1.55 var(--sans);color:var(--fg2);margin:0;max-width:52ch}
+.sf{display:flex;gap:8px;margin:18px 0 24px}
+.sf input{flex:1;min-width:0;height:46px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);padding:0 14px;font:400 16px var(--sans)}
+.sf input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.shelf{display:block;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;text-decoration:none;color:var(--fg)}
+.shelf:hover,.shelf:focus-visible{border-color:var(--accent)}
+.shelf b{display:block;font:600 21px/1.25 var(--sans)}.shelf .a{font:400 19px/1.5 var(--ar);color:var(--fg3)}
+.shelf small{display:block;font:400 14px/1.45 var(--sans);color:var(--fg2);margin-top:6px}
+.prog{height:5px;background:var(--bg2);border-radius:3px;margin-top:12px;overflow:hidden}.prog i{display:block;height:100%;min-width:4px;background:var(--accent)}
+h2.sec{font:600 14px/1.3 var(--sans);color:var(--fg3);margin:30px 0 10px}
+.list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.list a,.list .off{display:flex;gap:12px;align-items:baseline;padding:13px 2px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--fg);font:400 16.5px/1.4 var(--sans)}
+.list a:hover,.list a:focus-visible{background:var(--bg2)}
+.list .no{flex:0 0 2.1em;color:var(--fg3);font-size:14px;text-align:end;font-variant-numeric:tabular-nums}
+.list .t{flex:1;min-width:0}.list .c{color:var(--fg3);font-size:13.5px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.list .off{color:var(--fg3)}
+.list .t small{display:block;font-size:13.5px;line-height:1.45;color:var(--fg2);margin-top:2px}
+.bk h2{font:600 28px/1.2 var(--sans);margin:6px 0 2px;text-wrap:balance}.bk .a{font:400 21px/1.5 var(--ar);color:var(--fg3);margin:0}
+.chap{margin-top:34px;padding-top:18px;border-top:2px solid var(--accent)}
+.chap>.lb{font:500 12.5px/1.3 var(--sans);color:var(--fg3);margin:0 0 4px}
+.chap h3{font:600 19px/1.35 var(--sans);margin:0;text-wrap:pretty}
+.chap .bab{font:400 20px/1.8 var(--ar);color:var(--fg2);margin:6px 0 0}
+.intro{margin:10px 0 0;font-size:.94em;color:var(--fg2)}.intro p{margin:6px 0}
+article.h{padding:22px 0 20px;border-bottom:1px solid var(--line);scroll-margin-top:96px}
+.n{font:500 12.5px/1.3 var(--sans);color:var(--fg3);margin:0 0 3px}
+article.h h4{font:600 21px/1.3 var(--sans);margin:0 0 8px;text-wrap:balance}
+article.h h4.tar{font:700 22px/1.7 var(--ar)}
+.tr p{margin:0 0 .7em}.tr p:last-child{margin-bottom:0}
+.fold{max-height:15em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 62%,transparent);mask-image:linear-gradient(#000 62%,transparent)}
+.fold.on{max-height:none;-webkit-mask-image:none;mask-image:none}
+.more{display:inline-flex;align-items:center;min-height:44px;border:0;background:none;padding:0;color:var(--accent);font:500 15px var(--sans);cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+.fn{font:400 14.5px/1.5 var(--sans);color:var(--fg2);margin:10px 0 0;padding-top:8px;border-top:1px solid var(--line)}.fn p{margin:3px 0}
+.saw{font:400 1.2em/0 var(--ar);vertical-align:-.04em}
+sup{font-size:.72em;line-height:0;color:var(--accent);font-family:var(--sans)}
+details.d{margin-top:10px}details.d>summary{display:flex;align-items:center;gap:6px;min-height:40px;cursor:pointer;font:400 14.5px/1.35 var(--sans);color:var(--fg2);list-style:none}
+details.d>summary::-webkit-details-marker{display:none}
+details.d>summary::after{content:"";width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translate(-2px,-2px);margin-inline-start:4px;flex:none}
+details.d[open]>summary::after{transform:rotate(-135deg) translate(-2px,-2px)}
+details.d>summary b{font-weight:500;color:var(--fg)}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font:400 14px/1.4 var(--sans);padding:6px 0}
+.chain i{font-style:normal;color:var(--fg3);font-size:12.5px}
+.ch{display:inline-flex;align-items:center;min-height:32px;border:1px solid var(--line);border-radius:999px;padding:3px 11px;background:var(--card);color:var(--fg);cursor:pointer;text-decoration:none;font-weight:500}
+.ch:hover,.ch:focus-visible{border-color:currentColor}.ch-p{cursor:default;color:var(--fg2);font-weight:400}.ch[lang=ar]{font:500 16px/1.2 var(--ar)}
+.l6{box-shadow:inset 3px 0 0 var(--g6)}.l5{box-shadow:inset 3px 0 0 var(--g5)}.l4{box-shadow:inset 3px 0 0 var(--g4)}.l3{box-shadow:inset 3px 0 0 var(--g3)}
+.l2,.l1,.l0{box-shadow:inset 3px 0 0 var(--g2)}
+.ar{background:var(--bg2);border-radius:6px;padding:14px 16px;margin-top:12px;font-family:var(--ar);min-width:0}
+.ar p{margin:0}.isnad{font-size:18px;line-height:2;color:var(--fg2)}
+.matn{font-size:24px;line-height:2.05;color:var(--fg);margin-top:6px!important}
+a.r{color:var(--accent);cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:6px}
+.sh{margin-top:18px;padding:16px 16px 14px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.sh>.lb{font:600 14px/1.3 var(--sans);color:var(--accent);margin:0 0 8px}
+.sh .bd p{margin:0 0 .75em;font-size:.96em}mark{background:var(--mark);color:inherit;border-bottom:2px solid var(--mark-line);padding:0 2px;border-radius:2px}
+.sh .where{font:400 14px/1.5 var(--sans);color:var(--fg2)}.sh .dlg{padding-inline-start:14px}
+.story{background:var(--bg2);border-radius:6px;padding:12px 14px;margin:0 0 .8em}.story p{margin:0;font-size:.92em}.story .flag{font:400 13px/1.45 var(--sans);color:var(--fg2);margin-top:6px}
+.take{border-top:2px solid var(--accent);padding-top:10px;margin-top:6px}.take h4{font:600 15px/1.3 var(--sans);color:var(--accent);margin:0 0 6px}
+.take ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:5px}.narr{font-size:.92em;color:var(--fg2);margin-top:10px!important}
+.oth{font:400 14.5px/1.55 var(--sans);color:var(--fg2);padding-bottom:6px}.oth p{margin:4px 0}.oth a{white-space:nowrap}
+.acts{display:flex;gap:14px;margin-top:4px}
+.empty{background:var(--bg2);border-radius:8px;padding:18px;margin-top:22px;font:400 15.5px/1.55 var(--sans);color:var(--fg2)}
+.btn{display:inline-flex;align-items:center;min-height:44px;margin-top:10px;padding:0 16px;border:1px solid var(--accent);border-radius:8px;background:none;color:var(--accent);font:500 15px var(--sans);cursor:pointer;text-decoration:none}
+.pn{display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap}
+.foot{font:400 13.5px/1.6 var(--sans);color:var(--fg2);margin-top:40px}
+.res .sn{display:block;font-size:14px;line-height:1.5;color:var(--fg2);margin-top:3px}.res b{color:var(--fg);font-weight:600}
+.res .ars{direction:rtl;font:400 17px/1.8 var(--ar)}
+#scrim{position:fixed;inset:0;z-index:19;background:rgba(0,0,0,.28)}
+#card,#src{position:fixed;z-index:20;background:var(--card);overflow-y:auto;font:400 15px/1.55 var(--sans);top:0;bottom:0;right:0;width:min(420px,100%);
+border-inline-start:1px solid var(--line);box-shadow:-8px 0 30px rgba(0,0,0,.13);padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 24px 18px}
+.xb{position:sticky;top:0;float:right;width:44px;height:44px;margin:-8px -8px 0 8px;border:0;background:var(--card);border-radius:8px;color:var(--fg);font-size:22px;cursor:pointer}
+.xb:hover,.xb:focus-visible{background:var(--bg2)}
+.pc h3{font:600 21px/1.25 var(--sans);margin:0 0 2px}.pc .arn{font:400 20px/1.6 var(--ar);color:var(--fg2);direction:rtl;text-align:right;clear:both}
+.g{display:inline-block;font:600 13px/1.3 var(--sans);padding:4px 10px;border-radius:4px;color:var(--card);margin:8px 0}
+.g.l6{background:var(--g6);box-shadow:none}.g.l5{background:var(--g5);box-shadow:none}.g.l4{background:var(--g4);box-shadow:none}.g.l3{background:var(--g3);box-shadow:none}
+.g.l2,.g.l1,.g.l0{background:var(--g2);box-shadow:none}.g.l-1{background:var(--g0);box-shadow:none}
+.pc h4{font:600 13px/1.3 var(--sans);color:var(--fg3);margin:18px 0 5px}.pc p{margin:3px 0}.pc ul{list-style:none;margin:0;padding:0}
+.pc li{border-top:1px solid var(--line)}.pc li a{display:block;padding:9px 0;color:var(--fg);text-decoration:none}.pc li a:hover{color:var(--accent)}
+.pc li small{display:block;color:var(--fg3);font-size:12.5px}
+.q{font:400 18px/1.7 var(--ar);direction:rtl;text-align:right;padding:5px 0;border-top:1px solid var(--line)}
+.q small{display:block;font:400 12.5px/1.3 var(--sans);color:var(--fg3)}
+.tt{display:flex;flex-wrap:wrap;gap:6px 12px}.tt a{color:var(--accent);cursor:pointer;text-underline-offset:3px}.tt span[lang=ar],.tt a[lang=ar]{font:400 17px/1.4 var(--ar)}
+#src h3{font:600 19px/1.3 var(--sans);margin:0 0 4px}#src>p{margin:0 0 12px;color:var(--fg2)}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line);cursor:pointer}
+.opt input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);flex:none}.opt b{display:block;font-weight:500}.opt small{color:var(--fg2);font-size:13.5px;line-height:1.45;display:block}
+.sz{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}.sz button{width:44px;height:44px;border:1px solid var(--line);border-radius:8px;background:none;cursor:pointer}.sz span{flex:1}
+.edbar{position:sticky;top:57px;z-index:9;margin:-20px calc(-1*max(16px,env(safe-area-inset-left,0px))) 14px;padding:6px 16px;background:var(--mark);font:500 13.5px/1.35 var(--sans);display:flex;gap:10px;justify-content:space-between;align-items:center}
+.edbar a{color:inherit;white-space:nowrap}
+[data-ed]{position:relative;padding-inline-end:38px}
+.pen{position:absolute;top:0;right:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--accent);font:500 14px/1 var(--sans);cursor:pointer;padding:0}
+.pen.has{background:var(--accent);color:var(--card);border-color:var(--accent)}.pen.ok{background:var(--g5);color:var(--card);border-color:var(--g5)}
+.edited{box-shadow:-6px 0 0 var(--mark-line)}
+.ednote{font:400 13.5px/1.45 var(--sans);color:var(--fg2);margin:4px 0 .7em;padding:6px 10px;background:var(--bg2);border-radius:6px}
+#sheet{position:fixed;z-index:30;left:50%;bottom:0;transform:translateX(-50%);width:min(620px,100%);max-height:88vh;overflow-y:auto;background:var(--card);border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;box-shadow:0 -10px 30px rgba(0,0,0,.2);
+padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));font:400 15px/1.5 var(--sans);display:flex;flex-direction:column;gap:8px}
+#sheet h3{font:600 16px/1.3 var(--sans);margin:0}#sheet label{font:500 13px/1.3 var(--sans);color:var(--fg2)}
+#sheet textarea{width:100%;min-height:7em;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);padding:10px;font:400 16px/1.55 var(--serif);resize:vertical}
+#sheet textarea.nt{min-height:4em;font-family:var(--sans)}
+#sheet .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}#sheet .btn{margin-top:0}#sheet .btn.pri{background:var(--accent);color:var(--card)}
+.orig{font-size:13.5px;color:var(--fg2);background:var(--bg2);border-radius:6px;padding:8px 10px}.toast{position:fixed;z-index:40;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:8px;font:400 14px/1.3 var(--sans);max-width:90vw}
+.qs{margin-top:30px}.qs h3{font:600 17px/1.3 var(--sans);margin:0 0 6px}.qs p{font:400 15px/1.55 var(--sans);margin:0 0 .7em;color:var(--fg2)}
+@media (max-width:640px){#card,#src{top:auto;left:0;right:0;width:auto;max-height:78vh;border-inline-start:0;border-top:1px solid var(--line);border-radius:12px 12px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.18);
+padding:14px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.matn{font-size:22px}.isnad{font-size:17px}.hero h2{font-size:28px}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="ib" id="back" href="#/" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></a>
+  <h1 id="ttl">Библиотека хадисов</h1>
+  <a class="ib" href="#/search" aria-label="Поиск"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></a>
+  <button class="ib" id="srcb" aria-label="Источники и вид"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
+</header>
+<main class="wrap" id="view"></main>
+<div id="scrim" hidden></div>
+<aside id="card" class="pc" hidden aria-label="Карточка передатчика"></aside>
+<aside id="src" hidden aria-label="Источники и вид"></aside>
+<section id="sheet" hidden aria-label="Правка"></section>
+<div class="toast" id="toast" hidden></div>
+<script>
+const LS='hd_',FOLD=300;
+const rd=(k,d)=>{try{const v=localStorage.getItem(LS+k);return v==null?d:JSON.parse(v)}catch{return d}};
+const wr=(k,v)=>{try{localStorage.setItem(LS+k,JSON.stringify(v))}catch{}};
+const ST={ru:rd('ru',true),sharh:rd('sharh',true),isnad:rd('isnad',true),ar:rd('ar',false),fs:rd('fs',18)};
+const SOURCES=[['ru','Перевод','Текст хадиса на русском'],['sharh','Ясный шарх','Живое объяснение, где оно уже написано'],['isnad','Цепочка передатчиков','Имена открывают карточку человека'],['ar','Арабский текст','Полный иснад и текст. С ним виден весь сборник, а не только переведённое']];
+const $=i=>document.getElementById(i),view=$('view');
+const escP=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const esc=s=>escP(s).replace(/ﷺ/g,'<span class="saw">ﷺ</span>');
+const pad=n=>String(n).padStart(2,'0');
+const fmt=n=>Number(n).toLocaleString('ru-RU');
+const mem={};
+const J=u=>mem[u]??=fetch(u).then(r=>{if(!r.ok)throw new Error(u);return r.json()}).catch(e=>{delete mem[u];throw e});
+const fontApply=()=>document.documentElement.style.setProperty('--fs',ST.fs+'px');fontApply();
+let CFG=null,BOOK=null,cardOn=false;
+
+function bar(title,back){$('ttl').textContent=title;$('back').href=back||'#/';$('back').hidden=back===null;document.title=title==='Библиотека хадисов'?title:title+' · Библиотека хадисов'}
+const foldBox=(html,words,lim=FOLD)=>words>lim?`<div class="fold">${html}</div><button class="more" data-open>Читать полностью</button>`:html;
+const wc=a=>a.join(' ').replace(/<[^>]+>/g,' ').trim().split(/\s+/).length;
+
+/* Главная и полка */
+function home(){bar('Библиотека хадисов',null);
+ const shelves=CFG.collections.map(c=>`<a class="shelf" href="#/${c.id}"><b>${esc(c.ru)}</b><span class="a" lang="ar" dir="rtl">${esc(c.ar)}</span>
+  <small>${esc(c.author)} · ${c.books} книг · ${fmt(c.total)} хадисов</small>
+  <div class="prog"><i style="width:${Math.max(.5,c.ready/c.total*100)}%"></i></div><small>Переведено ${fmt(c.ready)}</small></a>`).join('');
+ const arts=CFG.articles.length?`<h2 class="sec">Ясный шарх</h2><ul class="list">${CFG.articles.map(a=>`<li><a href="#/${a.k.split('-')[0]}/${a.b}/${a.n}"><span class="t">${esc(a.t)}</span><span class="c">№ ${a.n}</span></a></li>`).join('')}</ul>`:'';
+ view.innerHTML=`<section class="hero"><p class="v" lang="ar" dir="rtl">مكتبة الحديث</p><h2>Библиотека хадисов</h2><p>Перевод, передатчики и живое объяснение. Нажмите на имя в цепочке, и откроется, кто этот человек и что он передал.</p></section>
+ <form class="sf" id="sf"><input type="search" name="q" placeholder="Слово из хадиса или имя передатчика" aria-label="Поиск"><button class="ib" aria-label="Найти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button></form>
+ ${shelves}${arts}<p class="foot"><a href="#/about">О приложении и источниках</a></p>`}
+
+async function shelf(id){const c=CFG.collections.find(x=>x.id===id);bar(c.ru,'#/');
+ const bs=await J(`data/${id}/books.json`);
+ view.innerHTML=`<div class="bk"><h2>${esc(c.ru)}</h2><p class="a" lang="ar" dir="rtl">${esc(c.ar)}</p></div>
+ ${ST.ar?'':`<p class="intro">Открыты переведённые книги. Остальные доступны на арабском: включите его в настройках вверху.</p>`}
+ <h2 class="sec">Книги</h2><ul class="list">${bs.map(b=>{const on=b.ready||ST.ar,cnt=b.ready?`${fmt(b.ready)}${b.ready<b.total?' из '+fmt(b.total):''}`:(ST.ar?fmt(b.total):'готовится');
+  const inner=`<span class="no">${b.n}</span><span class="t">${esc(b.ru)}</span><span class="c">${cnt}</span>`;
+  return `<li>${on?`<a href="#/${id}/${b.n}">${inner}</a>`:`<div class="off">${inner}</div>`}</li>`}).join('')}</ul>`}
+
+/* Чтение книги: главы и хадисы одной лентой */
+const nameOf=(id,names)=>{const v=names[id];if(!v)return null;return v[0]?{t:v[0],ar:0,lv:v[2]}:{t:v[1],ar:1,lv:v[2]}};
+function chip(id,names){const n=nameOf(id,names);if(!n)return '';return `<a class="ch l${n.lv}" data-id="${id}"${n.ar?' lang="ar" dir="rtl"':''}>${esc(n.t)}</a>`}
+function chainBox(h,names){if(!ST.isnad||!h.c||!h.c.length||!h.c[0].length)return '';
+ const last=nameOf(h.c[0].at(-1),names);
+ const rows=h.c.map(c=>`<div class="chain"><span class="ch ch-p">Аль-Бухари</span>${c.map(i=>{const s=chip(i,names);return s?'<i>от</i>'+s:''}).join('')}${h.p?'<i>от</i><span class="ch ch-p">Пророк ﷺ</span>':''}</div>`).join('');
+ return `<details class="d"><summary>Передатчик: <b${last&&last.ar?' lang="ar"':''}>${esc(last?last.t:'')}</b></summary>${rows}</details>`}
+function arBlock(h){const parts=`<p class="isnad">${h.i}</p><p class="matn">${h.x}</p>${h.z?`<p class="isnad">${h.z}</p>`:''}`;
+ return `<section class="ar" lang="ar" dir="rtl">${foldBox(parts,wc([h.x]),200)}</section>`}
+function hadith(h,c,tg){const show=ST.ru&&h.ru,vis=show||ST.ar||h.n===tg;if(!vis)return '';
+ const adr=`${c}/${BOOK.n}/${h.n}`;
+ const head=h.t?`<h4${edA(adr+'/t')}>${esc(edTitle(adr+'/t',h.t))}${pen(adr+'/t')}</h4>`:`<h4 class="tar" lang="ar" dir="rtl">${esc(h.tar||'')}</h4>`;
+ const fn=h.fn?`<div class="fn">${h.fn.map((f,i)=>edBlock(`${adr}/fn/${i}`,f)).join('')}</div>`:'';
+ const tr=show?`<div class="tr">${foldBox(h.ru.map((p,i)=>edBlock(`${adr}/ru/${i}`,p)).join('')+fn,ED.on?0:wc(h.ru))}</div>`:(h.ru?'':'<p class="intro">Перевод этого хадиса готовится.</p>');
+ const ar=ST.ar||!h.ru?arBlock(h):'';
+ const sh=ST.sharh&&h.s?`<section class="sh" data-k="${c}-${h.n}"><p class="lb">Ясный шарх</p><div class="bd">Загружается…</div></section>`:'';
+ return `<article class="h" id="h${esc(h.n)}"><p class="n">№ ${esc(h.n)}</p>${head}${tr}${ar}${chainBox(h,BOOK.names)}${sh}
+ <details class="d" data-oth="${esc(h.n)}"><summary>Другие передачи этого хадиса</summary><div class="oth">Загружается…</div></details>
+ <div class="acts"><button class="more" data-link="#/${c}/${BOOK.n}/${esc(h.n)}">Скопировать ссылку</button></div></article>`}
+function chapter(ch,c,tg,ci){const hs=ch.h.map(h=>hadith(h,c,tg)).join('');
+ const cad=`${c}/${BOOK.n}/ch/${ci}`;
+ const showHead=hs||(ST.ar&&(ch.ar||ch.ai));if(!showHead)return '';
+ const ttl=ch.ru||ED.on&&SRC&&SRC.ch[ci]?`<h3${edA(cad+'/t')}>${esc(edTitle(cad+'/t',ch.ru))||'Без названия'}${pen(cad+'/t')}</h3>`:(ch.ar==='باب'||!ch.ar?'':`<p class="bab" lang="ar" dir="rtl">${esc(ch.ar)}</p>`);
+ const arT=ch.ru&&ST.ar&&ch.ar&&ch.ar!=='باب'?`<p class="bab" lang="ar" dir="rtl">${esc(ch.ar)}</p>`:'';
+ const intro=ch.intro&&ch.intro.length?`<div class="intro">${ch.intro.map((p,i)=>edBlock(`${cad}/intro/${i}`,p)).join('')}</div>`:'';
+ const cfn=ch.fn?`<div class="fn">${ch.fn.map((f,i)=>edBlock(`${cad}/fn/${i}`,f)).join('')}</div>`:'';
+ return `<section class="chap"><p class="lb">Глава</p>${ttl}${arT}${intro}${cfn}</section>${hs}`}
+async function book(c,n,tg){const col=CFG.collections.find(x=>x.id===c);let b;
+ try{b=await J(`data/${c}/${pad(n)}.json`)}catch{return notfound()}
+ BOOK=b;bar(b.ru,`#/${c}`);const bs=await J(`data/${c}/books.json`);
+ SRC=null;if(ED.on){try{SRC=await J(`data/${c}/${pad(n)}.src.json`)}catch{}}
+ const body=b.ch.map((ch,i)=>chapter(ch,c,tg,i)).join('');
+ const qs=ED.on&&SRC&&SRC.q.length?`<section class="qs"><h3>Вопросы переводчика</h3>${SRC.q.map((q,i)=>`<div data-ed="${c}/${b.n}/q/${i}" data-note="1"><p>${i+1}. ${esc(q)}</p>${pen(`${c}/${b.n}/q/${i}`)}${noteLine(`${c}/${b.n}/q/${i}`)}</div>`).join('')}</section>`:'';
+ const near=d=>{for(let i=n-1+d;i>=0&&i<bs.length;i+=d)if(bs[i].ready||ST.ar)return bs[i];return null};
+ const pv=near(-1),nx=near(1);
+ view.innerHTML=`<div class="bk"><p class="n">${esc(col.ru)} · книга ${n}</p><h2>${esc(b.ru)}</h2><p class="a" lang="ar" dir="rtl">${esc(b.ar)}</p></div>
+ ${ED.on?edBar():''}${body||`<div class="empty">Эта книга ещё не переведена.<br><button class="btn" data-ar>Показать на арабском</button></div>`}${qs}
+ <nav class="pn">${pv?`<a class="btn" href="#/${c}/${pv.n}">← ${esc(pv.ru)}</a>`:'<span></span>'}${nx?`<a class="btn" href="#/${c}/${nx.n}">${esc(nx.ru)} →</a>`:''}</nav>`;
+ watchSharh();
+ if(tg){const t=document.getElementById('h'+tg);if(t)t.scrollIntoView()}}
+
+/* Статьи шарха подгружаются, только когда до них дошли */
+const io='IntersectionObserver'in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);fillSharh(e.target)}}),{rootMargin:'400px'}):null;
+function watchSharh(){document.querySelectorAll('.sh[data-k]').forEach(s=>io?io.observe(s):fillSharh(s))}
+async function fillSharh(s){try{const a=await J(`data/sharh/${s.dataset.k}.json`);
+ const bd=s.querySelector('.bd');bd.innerHTML=foldBox(a.html,ED.on?0:a.html.replace(/<[^>]+>/g,' ').trim().split(/\s+/).length);
+ if(ED.on)bd.querySelectorAll('p,li').forEach((p,i)=>{const ad=`sharh/${s.dataset.k}/${i}`;p.dataset.ed=ad;p.dataset.note=1;p.insertAdjacentHTML('beforeend',pen(ad));p.insertAdjacentHTML('afterend',noteLine(ad))})}catch{s.querySelector('.bd').textContent='Не удалось загрузить статью.'}}
+
+async function fillOther(d){const c=location.hash.split('/')[1];const box=d.querySelector('.oth');
+ try{const t=await J(`data/${c}/${pad(BOOK.n)}.t.json`),o=t[d.dataset.oth],titles=await J(`data/${c}/titles.json`);
+  if(!o){box.textContent='Других передач в базе нет.';return}
+  const own=o.r.length?`<p>В этом сборнике: ${o.r.map(n=>titles[n]?`<a href="#/${c}/${titles[n][0]}/${n}">№ ${n}</a>`:`№ ${n}`).join(', ')}</p>`:'';
+  const oth=o.o.length?`<p>${o.o.map(b=>`${esc(b[1]||'Другая книга')} (${b[2]})`).join(' · ')}</p>`:'';
+  box.innerHTML=own+oth}catch{box.textContent='Не удалось загрузить список.'}}
+
+/* Передатчик */
+const YES=/^\d+$/;
+const person=(x)=>{const[id,ru,ar]=x,t=ru||ar,cl=ru?'':' lang="ar" dir="rtl"';return id?`<a data-id="${id}"${cl}>${esc(t)}</a>`:`<span${cl}>${esc(t)}</span>`};
+async function fetchNarrator(id){const ch=await J(`data/r/${Math.floor(id/100)}.json`);return ch[id]}
+async function narratorHTML(n){
+ const facts=[n.death?`ум. ${n.death} г. х.`:'',n.tab&&n.lv!=6?`ступень ${n.tab}`:'',n.total?`хадисов и преданий в базе: ${fmt(n.total)}`:''].filter(Boolean).join(' · ');
+ let list='';
+ for(const col of CFG.collections){const nums=n.h[col.id]||[];if(!nums.length)continue;
+  const titles=await J(`data/${col.id}/titles.json`);
+  const rows=nums.filter(x=>titles[x]&&(titles[x][1]||ST.ar));
+  const rest=nums.length-rows.length;
+  list+=`<h4>Что передал: ${esc(col.ru)}, ${fmt(nums.length)}</h4><ul>${rows.slice(0,50).map(x=>{const t=titles[x];return `<li><a href="#/${col.id}/${t[0]}/${x}"><small>№ ${x}</small>${t[1]?esc(t[1]):`<span lang="ar" dir="rtl" style="font:400 17px var(--ar)">${esc(t[2])}</span>`}</a></li>`}).join('')}</ul>
+  ${rows.length>50?`<p>И ещё ${fmt(rows.length-50)}.</p>`:''}${rest&&!ST.ar?`<p>Без перевода пока ${fmt(rest)}. С арабским текстом виден весь список.</p>`:''}`}
+ return `<h3>${esc(n.ru||n.ar)}</h3>${n.ru?`<div class="arn" lang="ar">${esc(n.ar)}</div>`:''}
+ <span class="g l${n.lv}">${esc(n.g)}</span><p>${esc(facts)}</p>${list}
+ ${n.te.length?`<h4>Учителя</h4><div class="tt">${n.te.map(person).join('')}</div>`:''}
+ ${n.st.length?`<h4>Ученики</h4><div class="tt">${n.st.map(person).join('')}</div>`:''}
+ ${n.books.length?`<h4>В каких сборниках</h4><p>${n.books.map(b=>`${esc(b[1])} (${b[2]})`).join(' · ')}</p>`:''}
+ <details class="d"><summary>Слова критиков на арабском</summary>
+ ${n.ih?`<div class="q"><small>Ибн Хаджар</small>${esc(n.ih)}</div>`:''}${n.dh?`<div class="q"><small>Аз-Захаби</small>${esc(n.dh)}</div>`:''}
+ ${n.crit.map(c=>`<div class="q"><small>${esc(c[0])}</small>${esc(c[1])}</div>`).join('')}
+ ${n.src.length?`<div class="q"><small>Где статья о нём</small>${n.src.map(s=>`${esc(s[0])} ${s[1]?s[1]+'/':''}${s[2]||''}`).join(' · ')}</div>`:''}</details>`}
+async function openCard(id){let n;try{n=await fetchNarrator(id)}catch{return}if(!n)return;
+ $('card').innerHTML=`<button class="xb" data-x aria-label="Закрыть">×</button>`+await narratorHTML(n);
+ if(!cardOn){history.pushState({card:1},'');cardOn=true}
+ $('card').hidden=false;$('scrim').hidden=false;$('card').scrollTop=0}
+function hidePanels(){$('card').hidden=true;$('src').hidden=true;$('sheet').hidden=true;$('scrim').hidden=true;cardOn=false}
+async function narratorPage(id){bar('Передатчик','#/');let n=null;try{n=await fetchNarrator(+id)}catch{}
+ if(!n)return notfound();bar(n.ru||n.ar,'#/');view.innerHTML=`<div class="pc">${await narratorHTML(n)}</div>`}
+
+/* Поиск */
+const normRu=s=>s.toLowerCase().replace(/ё/g,'е').replace(/\s+/g,' ').trim();
+const normAr=s=>s.replace(/[ً-ْٰـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/\s+/g,' ').trim();
+function snippet(t,q,i){const a=Math.max(0,i-60);return esc(t.slice(a,i))+'<b>'+esc(t.slice(i,i+q.length))+'</b>'+esc(t.slice(i+q.length,i+q.length+90))}
+async function searchPage(q){bar('Поиск','#/');
+ view.innerHTML=`<form class="sf" id="sf"><input type="search" name="q" value="${esc(q)}" placeholder="Слово из хадиса или имя передатчика" aria-label="Поиск" autofocus><button class="ib" aria-label="Найти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button></form><div id="res"></div>`;
+ if(q.trim().length<2){$('res').innerHTML='<p class="intro">Ищет по переводу и именам. Если написать по-арабски, ищет по арабскому тексту всего сборника.</p>';return}
+ const isAr=/[؀-ۿ]/.test(q),nq=isAr?normAr(q):normRu(q);let html='';
+ const ppl=(await J('data/narrators.json')).filter(p=>(isAr?normAr(p[2]):normRu(p[1])).includes(nq)).slice(0,10);
+ if(ppl.length)html+=`<h2 class="sec">Передатчики</h2><ul class="list">${ppl.map(p=>`<li><a href="#/r/${p[0]}"><span class="t"${p[1]?'':' lang="ar" dir="rtl"'}>${esc(p[1]||p[2])}</span></a></li>`).join('')}</ul>`;
+ for(const c of CFG.collections){const idx=await J(`data/${c.id}/search-${isAr?'ar':'ru'}.json`),titles=await J(`data/${c.id}/titles.json`);
+  const low=s=>isAr?s:s.toLowerCase().replace(/ё/g,'е');
+  const hits=idx.map(x=>[x[0],x[1],low(x[1]).indexOf(nq)]).filter(x=>x[2]>=0);
+  if(hits.length)html+=`<h2 class="sec">${esc(c.ru)}: ${fmt(hits.length)}</h2><ul class="list res">${hits.slice(0,60).map(x=>{const t=titles[x[0]];return `<li><a href="#/${c.id}/${t[0]}/${x[0]}"><span class="no">${x[0]}</span><span class="t">${esc(t[1]||t[2])}<span class="sn${isAr?' ars':''}">${snippet(x[1],nq,x[2])}</span></span></a></li>`}).join('')}</ul>`}
+ $('res').innerHTML=html||'<p class="empty">Ничего не нашлось.</p>'}
+
+function about(){bar('О приложении','#/');view.innerHTML=`<div class="intro" style="color:var(--fg)">
+ <p><strong>Библиотека хадисов</strong> устроена как «Библиотека тафсиров»: хадис занимает место аята, а к нему подключаются источники. Выбрать их можно кнопкой настроек вверху.</p>
+ <p><strong>Перевод и Ясный шарх</strong> наши. Перевод держится текста, шарх объясняет его живым языком по «Фатх аль-Бари» Ибн Хаджара и другим шархам. Работа идёт книга за книгой.</p>
+ <p><strong>Арабский текст, цепочки и другие передачи:</strong> hadith.dev (جامع خادم الحرمين الشريفين).</p>
+ <p><strong>Сведения о передатчиках:</strong> наша база по книгам риджаля.</p></div>`}
+const notfound=()=>{view.innerHTML='<div class="empty">Такой страницы нет.<br><a class="btn" href="#/">На главную</a></div>'};
+
+/* Редактор. Пока один пользователь: доступ по коду, правки лежат в воркере синхронизации тафсиров.
+   Когда появятся аккаунты, как в библиотеке Таухид, код заменит вход, а блок останется тем же. */
+const SYNC='https://tafsir-sync.qaadiy-tafsir.workers.dev/v1/';
+const ED={code:rd('edcode',''),on:!!rd('edcode',''),all:rd('edits',{})};
+let SRC=null;
+const toast=t=>{const e=$('toast');e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>{e.hidden=true},2800)};
+const mdi=s=>esc(s).replace(/\[\^(\w+)\]/g,'<sup>$1</sup>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/==(.+?)==/g,'<mark>$1</mark>');
+const edGet=a=>{const r=ED.all[a];return r&&!r.del?r:null};
+const edLive=a=>{const r=edGet(a);return r&&r.st!=='ok'?r:null};
+const edA=a=>ED.on?` data-ed="${esc(a)}"`:'';
+function pen(a){if(!ED.on)return '';const r=edGet(a);return `<button class="pen${r?(r.st==='ok'?' ok':' has'):''}" data-pen="${esc(a)}" aria-label="Править">✎</button>`}
+const noteLine=a=>{const r=edGet(a);if(!ED.on||!r)return '';return `${r.note?`<div class="ednote">Замечание: ${esc(r.note)}</div>`:''}${r.reply?`<div class="ednote">Ответ: ${esc(r.reply)}</div>`:''}`};
+const edTitle=(a,t)=>{const r=ED.on&&edLive(a);return r&&r.new!=null?r.new:t};
+function edBlock(a,html){const r=ED.on&&edLive(a),body=r&&r.new!=null?r.new.split(/\n\s*\n/).map(mdi).join('<br><br>'):html;
+ return `<p${edA(a)}${r&&r.new!=null?' class="edited"':''}>${body}${pen(a)}</p>${noteLine(a)}`}
+const edCount=()=>Object.values(ED.all).filter(r=>!r.del&&r.st!=='ok').length;
+const edBar=()=>`<div class="edbar"><span id="edn">Режим редактора. Открытых правок: ${edCount()}</span><a href="#/edits">Все правки</a></div>`;
+function edSource(a){if(!SRC)return null;const p=a.split('/'),[,,x]=p;
+ if(x==='ch'){const c=SRC.ch[+p[3]];if(!c)return null;return p[4]==='t'?c.t:c[p[4]][+p[5]]}
+ if(x==='q')return SRC.q[+p[3]];const h=SRC.h[x];if(!h)return null;return p[3]==='t'?h.t:h[p[3]][+p[4]]}
+function openSheet(a,noteOnly,text){const r=edGet(a),src=noteOnly?text:edSource(a),cur=r&&r.new!=null?r.new:src;
+ $('sheet').innerHTML=`<h3>${noteOnly?'Замечание':'Правка'}</h3>
+ ${!noteOnly&&r&&r.new!=null?`<div class="orig">Было: ${esc(src)}</div>`:''}${noteOnly&&src?`<div class="orig">${esc(src.slice(0,240))}</div>`:''}
+ ${noteOnly?'':`<label for="edt">Текст</label><textarea id="edt">${escP(cur??'')}</textarea>`}
+ <label for="edn2">Замечание для Claude, можно только его</label><textarea id="edn2" class="nt">${escP(r?r.note||'':'')}</textarea>
+ <div class="row"><button class="btn pri" data-edsave="${esc(a)}">Сохранить</button><button class="btn" data-edclose>Отмена</button>${r?`<button class="more" data-eddel="${esc(a)}">Убрать правку</button>`:''}</div>`;
+ $('sheet').dataset.src=src??'';$('sheet').hidden=false;$('scrim').hidden=false}
+async function edSync(){if(!ED.code)return false;
+ try{const blob=await fetch(SYNC+ED.code).then(r=>r.json());const remote=blob.edits||{};let dirty=false;
+  for(const k in ED.all)if(!remote[k]||ED.all[k].at>remote[k].at)dirty=true;
+  const merged={...remote};for(const k in ED.all)if(!merged[k]||ED.all[k].at>merged[k].at)merged[k]=ED.all[k];
+  ED.all=merged;wr('edits',merged);
+  if(dirty){const r=await fetch(SYNC+ED.code,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({edits:merged})});if(!r.ok)throw 0}
+  return true}catch{return false}}
+async function edSave(a){const s=$('sheet'),t=$('edt'),note=$('edn2').value.trim(),src=s.dataset.src,txt=t?t.value.trim():null;
+ const changed=t&&txt!==src.trim();if(!changed&&!note){hidePanels();return}
+ ED.all[a]={old:src,new:changed?txt:null,note,at:new Date().toISOString(),st:'new'};wr('edits',ED.all);hidePanels();const y=scrollY;await route();scrollTo(0,y);
+ toast(await edSync()?'Сохранено':'Сохранено на этом устройстве, отправлю при связи')}
+async function edDel(a){ED.all[a]={del:1,at:new Date().toISOString()};wr('edits',ED.all);hidePanels();const y=scrollY;await route();scrollTo(0,y);await edSync()}
+async function editorEnter(code){bar('Редактор','#/');
+ if(code==='off'){wr('edcode','');ED.code='';ED.on=false;view.innerHTML='<div class="empty">Режим редактора выключен на этом устройстве.</div>';return}
+ ED.code=code;ED.on=true;wr('edcode',code);await edSync();history.replaceState(null,'','#/');route();toast('Режим редактора включён')}
+async function editsPage(){bar('Правки','#/');if(!ED.on)return notfound();await edSync();
+ const rows=Object.entries(ED.all).filter(([,r])=>!r.del).sort((a,b)=>b[1].at.localeCompare(a[1].at));
+ const link=a=>{const p=a.split('/');return p[0]==='sharh'?(()=>{const[c,n]=p[1].split('-'),t=CFG.articles.find(x=>x.k===p[1]);return `#/${c}/${t?t.b:1}/${n}`})():`#/${p[0]}/${p[1]}${/^\d/.test(p[2])?'/'+p[2]:''}`};
+ view.innerHTML=`<div class="bk"><h2>Правки</h2></div><p class="intro">Открытых: ${edCount()}. Скажите Claude «забери правки», и он внесёт их в текст.</p>
+ <ul class="list">${rows.map(([a,r])=>`<li><a href="${link(a)}"><span class="t">${esc(a)}<small>${r.new!=null?esc(r.new.slice(0,120)):''}${r.note?' Замечание: '+esc(r.note.slice(0,120)):''}${r.reply?' Ответ: '+esc(r.reply.slice(0,120)):''}</small></span><span class="c">${r.st==='ok'?'учтено':'открыто'}</span></a></li>`).join('')||'<li class="empty">Правок пока нет.</li>'}</ul>
+ <p class="foot"><a href="#/editor/off">Выключить режим редактора на этом устройстве</a></p>`}
+
+/* Настройки */
+function srcPanel(){$('src').innerHTML=`<button class="xb" data-x aria-label="Закрыть">×</button><h3>Источники</h3><p>Что показывать под хадисом.</p>
+ ${SOURCES.map(s=>`<label class="opt"><input type="checkbox" data-src="${s[0]}"${ST[s[0]]?' checked':''}><span><b>${s[1]}</b><small>${s[2]}</small></span></label>`).join('')}
+ ${ED.on?`<div class="sz"><span>Режим редактора включён</span><a class="btn" href="#/edits" style="margin:0">Правки: ${edCount()}</a></div>`:''}<div class="sz"><span>Размер текста</span><button data-fs="-1" aria-label="Меньше">A−</button><button data-fs="1" aria-label="Больше">A+</button></div>`;
+ $('src').hidden=false;$('scrim').hidden=false}
+
+/* Навигация */
+const pos={};
+async function route(){hidePanels();
+ const h=decodeURIComponent(location.hash.replace(/^#\/?/,'')),[a,b,c]=h.split('/');
+ try{if(!CFG)CFG=await J('data/config.json');
+  if(!a)home();else if(a==='r')await narratorPage(b);else if(a==='search')await searchPage(b||'');else if(a==='about')about();else if(a==='editor')await editorEnter(b);else if(a==='edits')await editsPage();
+  else if(CFG.collections.some(x=>x.id===a)){if(b)await book(a,+b,c);else await shelf(a)}else notfound();
+ }catch(e){console.error(e);view.innerHTML='<div class="empty">Не удалось загрузить данные. Проверьте соединение.<br><button class="btn" onclick="location.reload()">Обновить</button></div>'}
+ if(!c)scrollTo(0,pos[location.hash]||0)}
+history.scrollRestoration='manual';
+addEventListener('scroll',()=>{pos[location.hash]=scrollY},{passive:true});
+addEventListener('hashchange',route);
+addEventListener('popstate',e=>{if(cardOn&&!(e.state&&e.state.card))hidePanels()});
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(cardOn)history.back();else hidePanels()}});
+document.addEventListener('submit',e=>{const f=e.target;if(f.id!=='sf')return;e.preventDefault();const q=f.q.value.trim();if(q)location.hash='#/search/'+encodeURIComponent(q)});
+document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.oth&&d.open&&!d.dataset.ok){d.dataset.ok=1;fillOther(d)}},true);
+document.addEventListener('change',e=>{const k=e.target.dataset.src;if(!k)return;ST[k]=e.target.checked;wr(k,ST[k]);const y=scrollY;route().then(()=>{srcPanel();scrollTo(0,y)})});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-pen],[data-edsave],[data-eddel],[data-edclose],[data-id],[data-open],[data-link],[data-ar],[data-x],[data-fs],#srcb,#scrim');if(!t)return;
+ if(t.dataset.pen){e.preventDefault();e.stopPropagation();const box=t.closest('[data-ed]');openSheet(t.dataset.pen,'note'in box.dataset,'note'in box.dataset?box.textContent.replace('✎','').trim():null)}
+ else if(t.dataset.edsave)edSave(t.dataset.edsave);
+ else if(t.dataset.eddel)edDel(t.dataset.eddel);
+ else if('edclose'in t.dataset)hidePanels();
+ else if(t.dataset.id){e.preventDefault();openCard(+t.dataset.id)}
+ else if('open'in t.dataset){t.previousElementSibling.classList.add('on');t.remove()}
+ else if(t.dataset.link){const u=location.href.split('#')[0]+t.dataset.link;navigator.clipboard&&navigator.clipboard.writeText(u).then(()=>{t.textContent='Ссылка скопирована';setTimeout(()=>{t.textContent='Скопировать ссылку'},1800)})}
+ else if('ar'in t.dataset){ST.ar=true;wr('ar',true);route()}
+ else if(t.dataset.fs){ST.fs=Math.min(24,Math.max(15,ST.fs+ +t.dataset.fs));wr('fs',ST.fs);fontApply()}
+ else if(t.id==='srcb')srcPanel();
+ else if(cardOn)history.back();else hidePanels()});
+route();
+if(ED.on){edSync();addEventListener('online',edSync)}
+if('serviceWorker'in navigator){if(location.search.includes('nosw=1')){navigator.serviceWorker.getRegistration().then(r=>r&&r.unregister());caches.keys().then(k=>k.filter(n=>n.startsWith('hd-')).forEach(n=>caches.delete(n)))}
+ else navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body>
+</html>

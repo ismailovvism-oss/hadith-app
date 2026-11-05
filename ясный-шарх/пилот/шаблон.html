@@ -1,0 +1,108 @@
+<title>Библиотека хадисов</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* Лист для чтения в семействе «Библиотеки тафсиров»: бумага и золото; цвет только у слов хадиса и у оценки передатчика. */
+:root{--bg:#FAF8F5;--bg2:#F0EDE6;--card:#fff;--line:#E5E0D8;--fg:#2D2A26;--fg2:#5A5650;--fg3:#8C8678;
+--accent:#6d5415;--mark:#F6E7B4;--mark-line:#B08A1E;--g6:#2B6F7A;--g5:#3E7A45;--g4:#A9741A;
+--serif:"IBM Plex Serif",Georgia,serif;--sans:"IBM Plex Sans",system-ui,sans-serif;--ar:"Amiri","Noto Naskh Arabic",serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1B1A17;--bg2:#24221E;--card:#262420;--line:#38352E;--fg:#E8E3D8;--fg2:#B5AFA2;--fg3:#8A8478;
+--accent:#c9a84c;--mark:#4A3D14;--mark-line:#C9A84C;--g6:#6FB7C2;--g5:#83BC88;--g4:#D6A650;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1B1A17;--bg2:#24221E;--card:#262420;--line:#38352E;--fg:#E8E3D8;--fg2:#B5AFA2;--fg3:#8A8478;
+--accent:#c9a84c;--mark:#4A3D14;--mark-line:#C9A84C;--g6:#6FB7C2;--g5:#83BC88;--g4:#D6A650;color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:400 17px/1.65 var(--serif)}
+.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 72px}
+header h1{font:600 26px/1.2 var(--sans);margin:0;color:var(--fg);text-wrap:balance}
+header p{font:400 15px/1.5 var(--sans);color:var(--fg2);margin:8px 0 0;max-width:58ch}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 8px}
+.toc{font:500 14px/1.3 var(--sans);color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:6px;padding:7px 11px;background:var(--card)}
+.toc:hover,.toc:focus-visible{border-color:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font:400 13px/1.4 var(--sans);color:var(--fg2);margin-top:10px}
+.legend b{font-weight:500}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:5px}
+article{border-top:1px solid var(--line);margin-top:38px;padding-top:30px;display:flex;flex-direction:column;gap:14px;scroll-margin-top:12px}
+.eyebrow{font:500 12.5px/1.3 var(--sans);letter-spacing:.03em;color:var(--fg3);margin:0}
+h2{font:600 24px/1.25 var(--sans);margin:0;text-wrap:balance}
+.ar{background:var(--bg2);border-radius:6px;padding:16px 18px;font-family:var(--ar);min-width:0}
+.ar p{margin:0}.bab{font-size:17px;line-height:1.8;color:var(--fg3);margin-bottom:10px!important}
+.isnad{font-size:19px;line-height:2;color:var(--fg2)}
+.matn{font-size:25px;line-height:2.05;color:var(--fg);margin-top:8px!important}
+a.r{color:var(--accent);cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:6px}
+a.r:hover,a.r:focus-visible{text-decoration-thickness:2px}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:5px 6px;font:400 14px/1.4 var(--sans)}
+.chain i{font-style:normal;color:var(--fg3);font-size:12.5px}
+.lbl{font:500 12.5px/1.3 var(--sans);color:var(--fg3);margin-inline-end:4px;flex-basis:100%}
+.ch{border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--card);color:var(--fg);cursor:pointer;text-decoration:none;font-weight:500}
+.ch:hover,.ch:focus-visible{border-color:currentColor}
+.ch-n,.ch-p{cursor:default;color:var(--fg2);font-weight:400}
+.l6{box-shadow:inset 3px 0 0 var(--g6)}.l5{box-shadow:inset 3px 0 0 var(--g5)}.l4{box-shadow:inset 3px 0 0 var(--g4)}
+.tr{font-size:18.5px;line-height:1.6;margin:6px 0 0}
+.where{font:400 14px/1.5 var(--sans);color:var(--fg2);margin:0}
+.body{display:flex;flex-direction:column;gap:13px;margin-top:6px}.body p{margin:0}
+mark{background:var(--mark);color:inherit;border-bottom:2px solid var(--mark-line);padding:0 2px;border-radius:2px}
+.dlg{padding-inline-start:16px;color:var(--fg)}
+.story{background:var(--bg2);border-radius:6px;padding:13px 16px;font-size:16px}
+.story p{margin:0}.flag{font:400 13px/1.45 var(--sans);color:var(--fg2);margin-top:7px!important}
+.take{border-top:2px solid var(--accent);padding-top:12px;margin-top:6px}
+.take h3{font:600 15px/1.3 var(--sans);color:var(--accent);margin:0 0 8px}
+.take ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:6px}
+.narr{font-size:15.5px;color:var(--fg2);margin:0}
+footer{border-top:1px solid var(--line);margin-top:44px;padding-top:18px;font:400 14px/1.55 var(--sans);color:var(--fg2)}
+#card{position:fixed;z-index:20;background:var(--card);border-inline-start:1px solid var(--line);overflow-y:auto;font:400 15px/1.55 var(--sans);
+top:0;bottom:0;right:0;width:min(400px,100%);padding:18px max(16px,env(safe-area-inset-right,0px)) 24px 18px;padding-top:calc(18px + env(safe-area-inset-top,0px));box-shadow:-8px 0 30px rgba(0,0,0,.13)}
+#card h3{font:600 20px/1.25 var(--sans);margin:0 34px 2px 0}
+#card .arn{font-family:var(--ar);font-size:20px;line-height:1.6;color:var(--fg2);direction:rtl;text-align:right}
+#x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));width:34px;height:34px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);font-size:18px;cursor:pointer}
+.g{display:inline-block;font:600 13px/1.3 var(--sans);padding:3px 9px;border-radius:4px;color:var(--card);margin:8px 0}
+.g.l6{background:var(--g6);box-shadow:none}.g.l5{background:var(--g5);box-shadow:none}.g.l4{background:var(--g4);box-shadow:none}
+#card h4{font:600 13px/1.3 var(--sans);color:var(--fg3);margin:16px 0 5px;letter-spacing:.02em}
+#card p{margin:3px 0}#card ul{list-style:none;margin:0;padding:0}
+#card li{padding:5px 0;border-top:1px solid var(--line)}
+#card .q{font-family:var(--ar);font-size:18px;line-height:1.7;direction:rtl;text-align:right}
+#card .q small{display:block;font:400 12.5px/1.3 var(--sans);color:var(--fg3);direction:ltr;text-align:left}
+#card .link{color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.tt{display:flex;flex-wrap:wrap;gap:4px 10px}.tt span,.tt a{white-space:nowrap}
+.tn{font-family:var(--ar);font-size:17px}
+@media (max-width:640px){#card{top:auto;left:0;right:0;width:auto;max-height:76vh;border-inline-start:0;border-top:1px solid var(--line);border-radius:12px 12px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.18);
+padding:16px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}#x{top:10px}
+.matn{font-size:23px}.isnad{font-size:18px}}
+</style>
+<div class="wrap">
+<header>
+<h1>Библиотека хадисов</h1>
+<p>Первый прототип. Хадис с арабским текстом и иснадом, живое изложение шарха и передатчики, которых можно открыть нажатием.</p>
+<nav>{{ОГЛАВЛЕНИЕ}}</nav>
+<div class="legend"><span><span class="dot" style="background:var(--g6)"></span>сподвижник</span><span><span class="dot" style="background:var(--g5)"></span>надёжный</span><span><span class="dot" style="background:var(--g4)"></span>правдивый</span><span><mark>слова хадиса</mark></span></div>
+</header>
+{{СТАТЬИ}}
+<footer>Арабский текст, иснады и номера передатчиков: hadith.dev (جامع خادم الحرمين الشريفين). Оценки и слова критиков: база проекта проверки иснадов, книги риджаля. В прототипе списки хадисов показаны выборочно; асары пока не подключены.</footer>
+</div>
+<aside id="card" hidden aria-label="Карточка передатчика"><button id="x" aria-label="Закрыть">×</button><div id="cardb"></div></aside>
+<script>
+const N={{ПЕРЕДАТЧИКИ}};
+const GR={'ثقة':'надёжный','صدوق':'правдивый','صحابي':'сподвижник'};
+const TAB={'الثانية':'2-я','الثالثة':'3-я','الرابعة':'4-я','الخامسة':'5-я','السادسة':'6-я','السابعة':'7-я','الثامنة':'8-я','التاسعة':'9-я','العاشرة':'10-я','الحادية عشرة':'11-я','كبار العاشرة':'старшие из 10-й','رؤس الطبقة السابعة':'глава 7-й','من رؤوس الطبقة الرابعة':'глава 4-й'};
+const PIL={58:'b30',26:'b13',65:'b34'};
+const e=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $=i=>document.getElementById(i);
+function nm(t){return N[t[0]]?`<a class="link" data-id="${t[0]}">${e(N[t[0]].ru)}</a>`:`<span class="tn">${e(t[1])}</span>`}
+function show(id){const n=N[id];if(!n)return;
+ const tab=n.level==6?'':(TAB[n.tabaqa]?`Ступень ${TAB[n.tabaqa]}`:'');
+ const facts=[n.death?`ум. ${n.death} г. х.`:'',tab,n.total?`хадисов и преданий в базе: ${n.total}`:''].filter(Boolean).join(' · ');
+ $('cardb').innerHTML=`<h3>${e(n.ru)}</h3><div class="arn">${e(n.ar)}</div>
+ <span class="g l${n.level}">${e(GR[n.grade]||n.grade)}</span><p>${e(facts)}</p>
+ <h4>Оценки</h4><div class="q"><small>Ибн Хаджар</small>${e(n.ibn_hajar||'—')}</div>${n.dhahabi?`<div class="q"><small>Аз-Захаби</small>${e(n.dhahabi)}</div>`:''}
+ ${n.crit.map(c=>`<div class="q"><small dir="rtl" style="text-align:right">${e(c[0])}</small>${e(c[1])}</div>`).join('')}
+ ${n.teachers.length?`<h4>Учителя</h4><div class="tt">${n.teachers.map(nm).join('')}</div>`:''}
+ ${n.students.length?`<h4>Ученики</h4><div class="tt">${n.students.map(nm).join('')}</div>`:''}
+ <h4>Что передал</h4><ul>${n.hadiths.map(h=>`<li class="q"${PIL[h[0]]?` data-go="${PIL[h[0]]}" style="cursor:pointer"`:''}><small>${e(h[2])}${PIL[h[0]]?' · есть выше':''}</small>${e(h[1])}</li>`).join('')}</ul>
+ <h4>Сборники</h4><p style="direction:rtl;text-align:right;font-family:var(--ar);font-size:17px">${n.books.map(b=>`${e(b[0])} (${b[1]})`).join(' · ')}</p>
+ ${n.src.length?`<h4>Где статья о нём</h4><p style="direction:rtl;text-align:right;font-family:var(--ar);font-size:17px">${n.src.map(s=>`${e(s[0])} ${s[1]?s[1]+'/':''}${s[2]||''}`).join(' · ')}</p>`:''}`;
+ $('card').hidden=false;$('card').scrollTop=0}
+document.addEventListener('click',ev=>{const t=ev.target.closest('[data-id],[data-go]');if(!t)return;ev.preventDefault();
+ if(t.dataset.id)show(t.dataset.id);else{$('card').hidden=true;$(t.dataset.go).scrollIntoView({behavior:'smooth'})}});
+$('x').onclick=()=>{$('card').hidden=true};
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape')$('card').hidden=true});
+</script>
