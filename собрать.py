@@ -326,6 +326,30 @@ def собрать_сборник(сб, шарх, имена, люди_всег�
             'total': max(числа, default=0), 'ready': sum(к['ready'] for к in оглавление), 'loaded': len(заголовки)}, статьи
 
 
+def полка_основ(шарх, статьи):
+    """«Пятьдесят основ»: порядок и названия из Джами-50.md. Хадисы аль-Бухари открываются из его книги,
+    у остальных арабский текст из основы-арабский.md и перевод из строки «Перевод:» статьи."""
+    ар = dict(re.findall(r'^## (\S+)\n\n(.*?)(?=\n\n## |\s*\Z)', open(f'{ЗДЕСЬ}/ясный-шарх/основы-арабский.md', encoding='utf-8').read(), re.S | re.M))
+    где_статья = {с['k']: с for с in статьи}
+    полка = []
+    for с in open(f'{ЗДЕСЬ}/ясный-шарх/Джами-50.md', encoding='utf-8'):
+        м = re.match(r'\| (\d+) \| ([^|]+) \| ([^|]+) \|', с)
+        if not м:
+            continue
+        н, имя, где = int(м.group(1)), м.group(2).strip(), м.group(3).strip()
+        б = re.fullmatch(r'Бухари (\d+)', где)
+        ключ = f'bukhari-{б.group(1)}' if б else 'tirmidhi-2317' if н == 12 else f'jami-{н}'
+        з = {'n': н, 't': имя, 'w': f'аль-Бухари, {б.group(1)}' if б else re.sub(r'\s*\(.*?\)', '', где), 'k': ключ}
+        if б:
+            if ключ in где_статья:
+                з.update(b=где_статья[ключ]['b'], h=где_статья[ключ]['n'], s=1)
+        elif ключ in шарх:
+            з.update(s=1, at=шарх[ключ]['t'].strip('«»'), ru=шарх[ключ]['перевод'], ar=re.sub(r'\s*\n\s*', ' ', ар.get(ключ, '')))
+        полка.append(з)
+    писать('osnovy.json', полка)
+    return {'total': len(полка), 'ready': sum(1 for з in полка if з.get('s'))}
+
+
 шарх = статьи_шарха()
 имена = {}
 п = f'{ИСНАД}/данные/имена-ру.json'
@@ -338,7 +362,7 @@ for сб in СБОРНИКИ:
     итог.append(с)
     все_статьи += ст
 карточки(люди, хадисы_людей, имена)
-писать('config.json', {'collections': итог, 'articles': все_статьи})
+писать('config.json', {'collections': итог, 'articles': все_статьи, 'osnovy': полка_основ(шарх, все_статьи)})
 print(json.dumps(итог, ensure_ascii=False))
 print('передатчиков', len(люди), 'с русским именем', sum(str(и) in имена for и in люди))
 print('размер data, МБ', round(sum(os.path.getsize(ф) for ф in glob.glob(f'{ВЫХОД}/**/*', recursive=True) if os.path.isfile(ф)) / 1e6, 1))

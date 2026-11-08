@@ -37,7 +37,7 @@ padding:calc(6px + env(safe-area-inset-top,0px)) max(8px,env(safe-area-inset-rig
 .sf input{flex:1;min-width:0;height:46px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);padding:0 14px;font:400 16px var(--sans)}
 .sf input:focus{outline:2px solid var(--accent);outline-offset:-1px}
 .shelf{display:block;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;text-decoration:none;color:var(--fg)}
-.shelf:hover,.shelf:focus-visible{border-color:var(--accent)}
+.shelf:hover,.shelf:focus-visible{border-color:var(--accent)}.shelf+.shelf{margin-top:12px}
 .shelf b{display:block;font:600 21px/1.25 var(--sans)}.shelf .a{font:400 19px/1.5 var(--ar);color:var(--fg3)}
 .shelf small{display:block;font:400 14px/1.45 var(--sans);color:var(--fg2);margin-top:6px}
 .prog{height:5px;background:var(--bg2);border-radius:3px;margin-top:12px;overflow:hidden}.prog i{display:block;height:100%;min-width:4px;background:var(--accent)}
@@ -177,7 +177,7 @@ function home(){bar('Библиотека хадисов',null);
  const arts=CFG.articles.length?`<h2 class="sec">С разбором</h2><p class="intro">Каждый хадис этих книг объяснён живым языком по «Фатх аль-Бари» и другим шархам. Читайте подряд или откройте любой.</p><ul class="list" id="arts">${sharhBooks.map(b=>`<li data-b="${b}"><a href="#/bukhari/${b}"><span class="t">Книга ${b}</span><span class="c">${fmt(CFG.articles.filter(a=>a.b===b).length)}</span></a></li>`).join('')}</ul>`:'';
  view.innerHTML=`<section class="hero"><p class="v" lang="ar" dir="rtl">مكتبة الحديث</p><h2>Библиотека хадисов</h2><p>Перевод, передатчики и живое объяснение. Нажмите на имя в цепочке, и откроется, кто этот человек и что он передал.</p></section>
  <form class="sf" id="sf"><input type="search" name="q" placeholder="Слово из хадиса или имя передатчика" aria-label="Поиск"><button class="ib" aria-label="Найти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button></form>
- ${shelves}${arts}<p class="foot"><a href="#/about">О приложении и источниках</a> · <a href="https://tawhiid.com" target="_blank" rel="noopener">Другие наши приложения</a></p>`;
+ ${shelves}${osnCard()}${arts}<p class="foot"><a href="#/about">О приложении и источниках</a> · <a href="https://tawhiid.com" target="_blank" rel="noopener">Другие наши приложения</a></p>`;
  if(CFG.articles.length)J('data/bukhari/books.json').then(bs=>document.querySelectorAll('#arts li').forEach(li=>{const b=bs.find(x=>x.n==li.dataset.b);if(b)li.querySelector('.t').textContent=b.ru})).catch(()=>{})}
 
 async function shelf(id){const c=CFG.collections.find(x=>x.id===id);bar(c.ru,'#/');
@@ -187,6 +187,30 @@ async function shelf(id){const c=CFG.collections.find(x=>x.id===id);bar(c.ru,'#/
  <h2 class="sec">Книги</h2><ul class="list">${bs.map(b=>{const on=b.ready||ST.ar,cnt=b.ready?`${fmt(b.ready)}${b.ready<b.total?' из '+fmt(b.total):''}${b.sharh?(b.sharh>=b.total?' · с разбором':` · с разбором ${fmt(b.sharh)}`):''}`:(ST.ar?fmt(b.total):'готовится');
   const inner=`<span class="no">${b.n}</span><span class="t">${esc(b.ru)}</span><span class="c">${cnt}</span>`;
   return `<li>${on?`<a href="#/${id}/${b.n}">${inner}</a>`:`<div class="off">${inner}</div>`}</li>`}).join('')}</ul>`}
+
+/* «Пятьдесят основ»: хадисы аль-Бухари берутся из его книг, остальные из data/osnovy.json */
+const OSN_AR='جامع العلوم والحكم';
+function osnCard(){const o=CFG.osnovy;if(!o)return '';
+ return `<a class="shelf" href="#/osnovy"><b>Пятьдесят основ</b><span class="a" lang="ar" dir="rtl">${OSN_AR}</span>
+  <small>Ан-Навави и Ибн Раджаб · ${o.total} хадисов, на которых держится религия</small>
+  <div class="prog"><i style="width:${Math.max(.5,o.ready/o.total*100)}%"></i></div><small>С разбором ${fmt(o.ready)}${o.ready<o.total?' из '+fmt(o.total):''}</small></a>`}
+async function osnovy(){bar('Пятьдесят основ','#/');const p=await J('data/osnovy.json'),bu=p.filter(z=>z.k.startsWith('bukhari-')).length;
+ view.innerHTML=`<div class="bk"><h2>Пятьдесят основ</h2><p class="a" lang="ar" dir="rtl">${OSN_AR}</p></div>
+ <p class="intro">Хадисы, на которых держится религия. Ан-Навави собрал сорок два таких хадиса, Ибн Раджаб добавил к ним восемь и разобрал все пятьдесят в книге «Джами аль-улюм валь-хикам». ${bu} из них есть у аль-Бухари, остальные приводят Муслим, ат-Тирмизи и другие. Разбор по Ибн Раджабу, Ибн Хаджару и другим шархам.</p>
+ <ul class="list">${p.map(z=>{const inner=`<span class="no">${z.n}</span><span class="t">${esc(z.t)}<small>${esc(z.w)}</small></span>`;
+  return `<li>${z.s?`<a href="#/osnovy/${z.n}">${inner}</a>`:`<div class="off">${inner}<span class="c">готовится</span></div>`}</li>`}).join('')}</ul>`}
+async function osnova(n){const p=await J('data/osnovy.json'),i=p.findIndex(z=>z.n===n),z=p[i];if(!z||!z.s)return notfound();
+ bar(z.t,'#/osnovy');let top='',body;
+ if(z.b){const b=await J(`data/bukhari/${pad(z.b)}.json`),h=b.ch.flatMap(c=>c.h).find(x=>x.n===z.h);if(!h)return notfound();
+  BOOK=b;SRC=null;body=hadith(h,'bukhari',h.n);
+  top=`<p class="intro">Аль-Бухари, ${esc(b.ru)}, № ${esc(h.n)}. <a href="#/bukhari/${b.n}/${esc(h.n)}">Открыть в книге</a></p>`}
+ else{const ru=ST.ru&&z.ru,ar=ST.ar||!ru;
+  body=`<article class="h">${z.at&&z.at!==z.t?`<h4>${esc(z.at)}</h4>`:''}${ru?`<div class="tr"><p>${z.ru}</p></div>`:''}${ar?`<section class="ar" lang="ar" dir="rtl"><p class="matn">${esc(z.ar)}</p></section>`:''}
+  ${ST.sharh?`<section class="sh" data-k="${z.k}" data-full="1"><p class="lb">Ясный шарх</p><div class="bd">Загружается…</div></section>`:''}</article>`}
+ const pv=p.slice(0,i).reverse().find(x=>x.s),nx=p.slice(i+1).find(x=>x.s);
+ view.innerHTML=`<div class="bk"><p class="n">Пятьдесят основ · хадис ${n} из ${p.length}</p><h2>${esc(z.t)}</h2></div>${top}${body}
+ <nav class="pn">${pv?`<a class="btn" href="#/osnovy/${pv.n}">← ${pv.n}. ${esc(pv.t)}</a>`:'<span></span>'}${nx?`<a class="btn" href="#/osnovy/${nx.n}">${nx.n}. ${esc(nx.t)} →</a>`:''}</nav>`;
+ watchSharh()}
 
 /* Чтение книги: главы и хадисы одной лентой */
 const nameOf=(id,names)=>{const v=names[id];if(!v)return null;return v[0]?{t:v[0],ar:0,lv:v[2]}:{t:v[1],ar:1,lv:v[2]}};
@@ -205,7 +229,7 @@ function hadith(h,c,tg){const show=ST.ru&&h.ru,vis=show||ST.ar||h.n===tg;if(!vis
  const ar=ST.ar||!h.ru?arBlock(h):'';
  const sh=ST.sharh&&h.s?`<section class="sh" data-k="${c}-${h.n}"${h.n===tg?' data-full="1"':''}><p class="lb">Ясный шарх</p><div class="bd">Загружается…</div></section>`:'';
  return `<article class="h" id="h${esc(h.n)}"><p class="n">№ ${esc(h.n)}</p>${head}${tr}${ar}${chainBox(h,BOOK.names)}${sh}
- <details class="d" data-oth="${esc(h.n)}"><summary>Другие передачи этого хадиса</summary><div class="oth">Загружается…</div></details>
+ <details class="d" data-oth="${esc(h.n)}" data-c="${c}"><summary>Другие передачи этого хадиса</summary><div class="oth">Загружается…</div></details>
  <div class="acts"><button class="more" data-link="#/${c}/${BOOK.n}/${esc(h.n)}">Скопировать ссылку</button></div></article>`}
 function chapter(ch,c,tg,ci){const hs=ch.h.map(h=>hadith(h,c,tg)).join('');
  const cad=`${c}/${BOOK.n}/ch/${ci}`;
@@ -236,7 +260,7 @@ async function fillSharh(s){try{const a=await J(`data/sharh/${s.dataset.k}.json`
  const bd=s.querySelector('.bd');bd.innerHTML=foldBox(a.html,ED.on||s.dataset.full?0:a.html.replace(/<[^>]+>/g,' ').trim().split(/\s+/).length);
  if(ED.on)bd.querySelectorAll('p,li').forEach((p,i)=>{const ad=`sharh/${s.dataset.k}/${i}`;p.dataset.ed=ad;p.dataset.note=1;p.insertAdjacentHTML('beforeend',pen(ad));p.insertAdjacentHTML('afterend',noteLine(ad))})}catch{s.querySelector('.bd').textContent='Не удалось загрузить статью.'}}
 
-async function fillOther(d){const c=location.hash.split('/')[1];const box=d.querySelector('.oth');
+async function fillOther(d){const c=d.dataset.c;const box=d.querySelector('.oth');
  try{const t=await J(`data/${c}/${pad(BOOK.n)}.t.json`),o=t[d.dataset.oth],titles=await J(`data/${c}/titles.json`);
   if(!o){box.textContent='Других передач в базе нет.';return}
   const own=o.r.length?`<p>В этом сборнике: ${o.r.map(n=>titles[n]?`<a href="#/${c}/${titles[n][0]}/${n}">№ ${n}</a>`:`№ ${n}`).join(', ')}</p>`:'';
@@ -292,6 +316,7 @@ async function searchPage(q){bar('Поиск','#/');
 function about(){bar('О приложении','#/');view.innerHTML=`<div class="intro" style="color:var(--fg)">
  <p><strong>Библиотека хадисов</strong> устроена как «Библиотека тафсиров»: хадис занимает место аята, а к нему подключаются источники. Выбрать их можно кнопкой настроек вверху.</p>
  <p><strong>Перевод и Ясный шарх</strong> наши. Перевод держится текста, шарх объясняет его живым языком по «Фатх аль-Бари» Ибн Хаджара и другим шархам. Работа идёт книга за книгой.</p>
+ <p><strong>Пятьдесят основ</strong> — хадисы, на которых держится религия, в порядке «Джами аль-улюм валь-хикам» Ибн Раджаба: сорок два из «Сорока хадисов» ан-Навави и восемь, что добавил Ибн Раджаб. Его разбор здесь главный, где хадиса нет у аль-Бухари.</p>
  <p><strong>Арабский текст, цепочки и другие передачи:</strong> hadith.dev (جامع خادم الحرمين الشريفين).</p>
  <p><strong>Сведения о передатчиках:</strong> наша база по книгам риджаля.</p>
  <p><strong>Другие наши приложения и книги:</strong> <a href="https://tawhiid.com" target="_blank" rel="noopener">tawhiid.com</a></p></div>`}
@@ -341,7 +366,8 @@ async function editorEnter(code){bar('Редактор','#/');
  ED.code=code;ED.on=true;wr('edcode',code);await edSync();history.replaceState(null,'','#/');route();toast('Режим редактора включён')}
 async function editsPage(){bar('Правки','#/');if(!ED.on)return notfound();await edSync();
  const rows=Object.entries(ED.all).filter(([,r])=>!r.del).sort((a,b)=>b[1].at.localeCompare(a[1].at));
- const link=a=>{const p=a.split('/');return p[0]==='sharh'?(()=>{const[c,n]=p[1].split('-'),t=CFG.articles.find(x=>x.k===p[1]);return `#/${c}/${t?t.b:1}/${n}`})():`#/${p[0]}/${p[1]}${/^\d/.test(p[2])?'/'+p[2]:''}`};
+ const osn=await J('data/osnovy.json').catch(()=>[]);
+ const link=a=>{const p=a.split('/');return p[0]==='sharh'?(()=>{const[c,n]=p[1].split('-'),t=CFG.articles.find(x=>x.k===p[1]),o=osn.find(x=>x.k===p[1]);return t?`#/${c}/${t.b}/${n}`:o?`#/osnovy/${o.n}`:'#/'})():`#/${p[0]}/${p[1]}${/^\d/.test(p[2])?'/'+p[2]:''}`};
  view.innerHTML=`<div class="bk"><h2>Правки</h2></div><p class="intro">Открытых: ${edCount()}. Скажите Claude «забери правки», и он внесёт их в текст.</p>
  <ul class="list">${rows.map(([a,r])=>`<li><a href="${link(a)}"><span class="t">${esc(a)}<small>${r.new!=null?esc(r.new.slice(0,120)):''}${r.note?' Замечание: '+esc(r.note.slice(0,120)):''}${r.reply?' Ответ: '+esc(r.reply.slice(0,120)):''}</small></span><span class="c">${r.st==='ok'?'учтено':'открыто'}</span></a></li>`).join('')||'<li class="empty">Правок пока нет.</li>'}</ul>
  <p class="foot"><a href="#/editor/off">Выключить режим редактора на этом устройстве</a></p>`}
@@ -358,6 +384,7 @@ async function route(){hidePanels();
  const h=decodeURIComponent(location.hash.replace(/^#\/?/,'')),[a,b,c]=h.split('/');
  try{if(!CFG)CFG=await J('data/config.json');
   if(!a)home();else if(a==='r')await narratorPage(b);else if(a==='search')await searchPage(b||'');else if(a==='about')about();else if(a==='editor')await editorEnter(b);else if(a==='edits')await editsPage();
+  else if(a==='osnovy'){if(b)await osnova(+b);else await osnovy()}
   else if(CFG.collections.some(x=>x.id===a)){if(b)await book(a,+b,c);else await shelf(a)}else notfound();
  }catch(e){console.error(e);view.innerHTML='<div class="empty">Не удалось загрузить данные. Проверьте соединение.<br><button class="btn" onclick="location.reload()">Обновить</button></div>'}
  if(!c)scrollTo(0,pos[location.hash]||0)}
