@@ -129,7 +129,15 @@ padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));font:400 15px/1.5
 #sheet textarea.nt{min-height:4em;font-family:var(--sans)}
 #sheet .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}#sheet .btn{margin-top:0}#sheet .btn.pri{background:var(--accent);color:var(--card)}
 .orig{font-size:13.5px;color:var(--fg2);background:var(--bg2);border-radius:6px;padding:8px 10px}.toast{position:fixed;z-index:40;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:8px;font:400 14px/1.3 var(--sans);max-width:90vw}
-.qs{margin-top:30px}.qs h3{font:600 17px/1.3 var(--sans);margin:0 0 6px}.qs p{font:400 15px/1.55 var(--sans);margin:0 0 .7em;color:var(--fg2)}
+.qs{margin-top:30px}
+.qbox{margin-top:14px;padding:14px 16px 6px;border:1px solid var(--mark-line);border-radius:10px;background:var(--bg2)}
+.qbox>.lb{font:600 14px/1.3 var(--sans);color:var(--fg);margin:0 0 6px}
+.qi{padding:8px 0 4px;border-top:1px solid var(--line);scroll-margin-top:150px}.qi:first-of-type{border-top:0}
+.qi .qc{font:500 12.5px/1.4 var(--sans);color:var(--fg3);margin:0 0 4px}.qi .qc b{font-weight:600;color:var(--accent)}.qi.has .qc b{color:var(--fg2)}.qi.ok .qc b{color:var(--g5)}
+.qi .ql{font:400 13.5px/1.45 var(--sans);color:var(--fg2);margin:0 0 2px}.qi .qt{font:400 15.5px/1.55 var(--sans);margin:0 0 4px}
+.qi .qr{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.qi .qto{font:400 14px/1.4 var(--sans);color:var(--fg2)}
+.qi.flash{animation:fl 2.4s ease-out}@keyframes fl{from{background:var(--mark)}to{background:transparent}}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 4px}.tabs a{font:500 14px/1 var(--sans);padding:9px 12px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--fg2)}.tabs a.on{border-color:var(--accent);color:var(--accent)}.qs h3{font:600 17px/1.3 var(--sans);margin:0 0 6px}.qs p{font:400 15px/1.55 var(--sans);margin:0 0 .7em;color:var(--fg2)}
 @media (max-width:640px){#card,#src{top:auto;left:0;right:0;width:auto;max-height:78vh;border-inline-start:0;border-top:1px solid var(--line);border-radius:12px 12px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.18);
 padding:14px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .matn{font-size:22px}.isnad{font-size:17px}.hero h2{font-size:28px}}
@@ -177,7 +185,7 @@ function home(){bar('Библиотека хадисов',null);
  const arts=CFG.articles.length?`<h2 class="sec">С разбором</h2><p class="intro">Каждый хадис этих книг объяснён живым языком по «Фатх аль-Бари» и другим шархам. Читайте подряд или откройте любой.</p><ul class="list" id="arts">${sharhBooks.map(b=>`<li data-b="${b}"><a href="#/bukhari/${b}"><span class="t">Книга ${b}</span><span class="c">${fmt(CFG.articles.filter(a=>a.b===b).length)}</span></a></li>`).join('')}</ul>`:'';
  view.innerHTML=`<section class="hero"><p class="v" lang="ar" dir="rtl">مكتبة الحديث</p><h2>Библиотека хадисов</h2><p>Перевод, передатчики и живое объяснение. Нажмите на имя в цепочке, и откроется, кто этот человек и что он передал.</p></section>
  <form class="sf" id="sf"><input type="search" name="q" placeholder="Слово из хадиса или имя передатчика" aria-label="Поиск"><button class="ib" aria-label="Найти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button></form>
- ${shelves}${osnCard()}${arts}<p class="foot"><a href="#/about">О приложении и источниках</a> · <a href="https://tawhiid.com" target="_blank" rel="noopener">Другие наши приложения</a></p>`;
+ ${ED.on?'<p class="intro">Режим редактора: <a href="#/questions">вопросы к вам</a> · <a href="#/edits">правки</a>. Карандаш у абзаца — замечание к нему.</p>':''}${shelves}${osnCard()}${arts}<p class="foot"><a href="#/about">О приложении и источниках</a> · <a href="https://tawhiid.com" target="_blank" rel="noopener">Другие наши приложения</a></p>`;
  if(CFG.articles.length)J('data/bukhari/books.json').then(bs=>document.querySelectorAll('#arts li').forEach(li=>{const b=bs.find(x=>x.n==li.dataset.b);if(b)li.querySelector('.t').textContent=b.ru})).catch(()=>{})}
 
 async function shelf(id){const c=CFG.collections.find(x=>x.id===id);bar(c.ru,'#/');
@@ -199,18 +207,18 @@ async function osnovy(){bar('Пятьдесят основ','#/');const p=await 
  <p class="intro">Хадисы, на которых держится религия. Ан-Навави собрал сорок два таких хадиса, Ибн Раджаб добавил к ним восемь и разобрал все пятьдесят в книге «Джами аль-улюм валь-хикам». ${bu} из них есть у аль-Бухари, остальные приводят Муслим, ат-Тирмизи и другие. Разбор по Ибн Раджабу, Ибн Хаджару и другим шархам.</p>
  <ul class="list">${p.map(z=>{const inner=`<span class="no">${z.n}</span><span class="t">${esc(z.t)}<small>${esc(z.w)}</small></span>`;
   return `<li>${z.s?`<a href="#/osnovy/${z.n}">${inner}</a>`:`<div class="off">${inner}<span class="c">готовится</span></div>`}</li>`}).join('')}</ul>`}
-async function osnova(n){const p=await J('data/osnovy.json'),i=p.findIndex(z=>z.n===n),z=p[i];if(!z||!z.s)return notfound();
+async function osnova(n,qa){if(ED.on)await qIndex().catch(()=>{});const p=await J('data/osnovy.json'),i=p.findIndex(z=>z.n===n),z=p[i];if(!z||!z.s)return notfound();
  bar(z.t,'#/osnovy');let top='',body;
  if(z.b){const b=await J(`data/bukhari/${pad(z.b)}.json`),h=b.ch.flatMap(c=>c.h).find(x=>x.n===z.h);if(!h)return notfound();
   BOOK=b;SRC=null;body=hadith(h,'bukhari',h.n);
   top=`<p class="intro">Аль-Бухари, ${esc(b.ru)}, № ${esc(h.n)}. <a href="#/bukhari/${b.n}/${esc(h.n)}">Открыть в книге</a></p>`}
  else{const ru=ST.ru&&z.ru,ar=ST.ar||!ru;
   body=`<article class="h">${z.at&&z.at!==z.t?`<h4>${esc(z.at)}</h4>`:''}${ru?`<div class="tr"><p>${z.ru}</p></div>`:''}${ar?`<section class="ar" lang="ar" dir="rtl"><p class="matn">${esc(z.ar)}</p></section>`:''}
-  ${ST.sharh?`<section class="sh" data-k="${z.k}" data-full="1"><p class="lb">Ясный шарх</p><div class="bd">Загружается…</div></section>`:''}</article>`}
+  ${ST.sharh?`<section class="sh" data-k="${z.k}" data-full="1"><p class="lb">Ясный шарх</p><div class="bd">Загружается…</div></section>`:''}${qBox(z.k)}</article>`}
  const pv=p.slice(0,i).reverse().find(x=>x.s),nx=p.slice(i+1).find(x=>x.s);
  view.innerHTML=`<div class="bk"><p class="n">Пятьдесят основ · хадис ${n} из ${p.length}</p><h2>${esc(z.t)}</h2></div>${top}${body}
  <nav class="pn">${pv?`<a class="btn" href="#/osnovy/${pv.n}">← ${pv.n}. ${esc(pv.t)}</a>`:'<span></span>'}${nx?`<a class="btn" href="#/osnovy/${nx.n}">${nx.n}. ${esc(nx.t)} →</a>`:''}</nav>`;
- watchSharh()}
+ watchSharh();if(qa)goQ(qa)}
 
 /* Чтение книги: главы и хадисы одной лентой */
 const nameOf=(id,names)=>{const v=names[id];if(!v)return null;return v[0]?{t:v[0],ar:0,lv:v[2]}:{t:v[1],ar:1,lv:v[2]}};
@@ -228,7 +236,7 @@ function hadith(h,c,tg){const show=ST.ru&&h.ru,vis=show||ST.ar||h.n===tg;if(!vis
  const tr=show?`<div class="tr">${foldBox(h.ru.map((p,i)=>edBlock(`${adr}/ru/${i}`,p)).join('')+fn,ED.on||h.n===tg?0:wc(h.ru))}</div>`:(h.ru?'':'<p class="intro">Перевод этого хадиса готовится.</p>');
  const ar=ST.ar||!h.ru?arBlock(h):'';
  const sh=ST.sharh&&h.s?`<section class="sh" data-k="${c}-${h.n}"${h.n===tg?' data-full="1"':''}><p class="lb">Ясный шарх</p><div class="bd">Загружается…</div></section>`:'';
- return `<article class="h" id="h${esc(h.n)}"><p class="n">№ ${esc(h.n)}</p>${head}${tr}${ar}${chainBox(h,BOOK.names)}${sh}
+ return `<article class="h" id="h${esc(h.n)}"><p class="n">№ ${esc(h.n)}</p>${head}${tr}${ar}${chainBox(h,BOOK.names)}${sh}${qBox(c+'-'+h.n)}
  <details class="d" data-oth="${esc(h.n)}" data-c="${c}"><summary>Другие передачи этого хадиса</summary><div class="oth">Загружается…</div></details>
  <div class="acts"><button class="more" data-link="#/${c}/${BOOK.n}/${esc(h.n)}">Скопировать ссылку</button></div></article>`}
 function chapter(ch,c,tg,ci){const hs=ch.h.map(h=>hadith(h,c,tg)).join('');
@@ -239,19 +247,20 @@ function chapter(ch,c,tg,ci){const hs=ch.h.map(h=>hadith(h,c,tg)).join('');
  const intro=ch.intro&&ch.intro.length?`<div class="intro">${ch.intro.map((p,i)=>edBlock(`${cad}/intro/${i}`,p)).join('')}</div>`:'';
  const cfn=ch.fn?`<div class="fn">${ch.fn.map((f,i)=>edBlock(`${cad}/fn/${i}`,f)).join('')}</div>`:'';
  return `<section class="chap"><p class="lb">Глава</p>${ttl}${arT}${intro}${cfn}</section>${hs}`}
-async function book(c,n,tg){const col=CFG.collections.find(x=>x.id===c);let b;
+async function book(c,n,tg,qa){if(tg&&tg.startsWith('q-')){qa=tg;tg=null}const col=CFG.collections.find(x=>x.id===c);let b;
  try{b=await J(`data/${c}/${pad(n)}.json`)}catch{return notfound()}
  BOOK=b;bar(b.ru,`#/${c}`);const bs=await J(`data/${c}/books.json`);
- SRC=null;if(ED.on){try{SRC=await J(`data/${c}/${pad(n)}.src.json`)}catch{}}
+ SRC=null;if(ED.on){try{SRC=await J(`data/${c}/${pad(n)}.src.json`)}catch{}await qIndex().catch(()=>{})}
  const body=b.ch.map((ch,i)=>chapter(ch,c,tg,i)).join('');
- const qs=ED.on&&SRC&&SRC.q.length?`<section class="qs"><h3>Вопросы переводчика</h3>${SRC.q.map((q,i)=>`<div data-ed="${c}/${b.n}/q/${i}" data-note="1"><p>${i+1}. ${esc(q)}</p>${pen(`${c}/${b.n}/q/${i}`)}${noteLine(`${c}/${b.n}/q/${i}`)}</div>`).join('')}</section>`:'';
+ const bq=ED.on&&QI&&QI.book[`${c}/${n}`],qs=bq?`<section class="qbox"><p class="lb">Вопросы ко всей книге</p>${bq.map(q=>qItem(q,1)).join('')}</section>`:'';
  const near=d=>{for(let i=n-1+d;i>=0&&i<bs.length;i+=d)if(bs[i].ready||ST.ar)return bs[i];return null};
  const pv=near(-1),nx=near(1);
  view.innerHTML=`<div class="bk"><p class="n">${esc(col.ru)} · книга ${n}</p><h2>${esc(b.ru)}</h2><p class="a" lang="ar" dir="rtl">${esc(b.ar)}</p></div>
  ${ED.on?edBar():''}${body||`<div class="empty">Эта книга ещё не переведена.<br><button class="btn" data-ar>Показать на арабском</button></div>`}${qs}
  <nav class="pn">${pv?`<a class="btn" href="#/${c}/${pv.n}">← ${esc(pv.ru)}</a>`:'<span></span>'}${nx?`<a class="btn" href="#/${c}/${nx.n}">${esc(nx.ru)} →</a>`:''}</nav>`;
  watchSharh();
- if(tg){const t=document.getElementById('h'+tg);if(t)t.scrollIntoView()}}
+ if(tg){const t=document.getElementById('h'+tg);if(t)t.scrollIntoView()}
+ if(qa)goQ(qa)}
 
 /* Статьи шарха подгружаются, только когда до них дошли */
 const io='IntersectionObserver'in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);fillSharh(e.target)}}),{rootMargin:'400px'}):null;
@@ -322,6 +331,35 @@ function about(){bar('О приложении','#/');view.innerHTML=`<div class=
  <p><strong>Другие наши приложения и книги:</strong> <a href="https://tawhiid.com" target="_blank" rel="noopener">tawhiid.com</a></p></div>`}
 const notfound=()=>{view.innerHTML='<div class="empty">Такой страницы нет.<br><a class="btn" href="#/">На главную</a></div>'};
 
+/* Вопросы хозяину (data/questions.json из ясный-шарх/вопросы-хозяину.md и вопросов переводчика): в режиме редактора
+   под шархом своего хадиса, в конце книги (вопросы без номера хадиса) и списком на #/questions. Ответ — правка «q/<id>». */
+let QI=null;
+async function qIndex(){if(QI)return QI;const all=await J('data/questions.json'),by={},bk={};
+ for(const q of all){for(const k of q.h)(by[k]??=[]).push(q);if(!q.h.length&&q.a[0])(bk[q.a[0]]??=[]).push(q)}
+ return QI={all,by,book:bk}}
+const qAns=q=>{const r=edGet('q/'+q.id);return !!(r&&(r.note||r.st==='ok'))};
+const qPlace=a=>{const p=a.split('/');return p[0]==='osnovy'?`основа ${p[1]}`:p[2]?`№ ${p[2]}`:`книга ${p[1]}`};
+function qItem(q,here){const r=edGet('q/'+q.id),st=!r?'ждёт ответа':r.st==='ok'?'учтено':'ответ отправлен';
+ const to=here?'':q.a.map(x=>`<a href="#/${x}/q-${q.id}">${qPlace(x)}</a>`).join(', ');
+ return `<div class="qi${r?(r.st==='ok'?' ok':' has'):''}" id="q-${q.id}"><p class="qc">${q.s==='перевод'?'Перевод':'Шарх'} · ${esc(q.c)} · <b>${st}</b></p>
+ ${q.l?`<p class="ql">${q.l}</p>`:''}<p class="qt">${q.t}</p>${r&&r.note?`<div class="ednote">Ваш ответ: ${esc(r.note)}</div>`:''}${r&&r.reply?`<div class="ednote">Claude: ${esc(r.reply)}</div>`:''}
+ <div class="qr">${to?`<span class="qto">К месту: ${to}</span>`:''}<button class="more" data-ask="${q.id}">${r&&r.note?'Изменить ответ':'Ответить'}</button></div></div>`}
+function qBox(k){const l=ED.on&&QI&&QI.by[k];return l?`<section class="qbox"><p class="lb">Вопросы к вам · ${l.length}</p>${l.map(q=>qItem(q,1)).join('')}</section>`:''}
+async function goQ(id){const el=$(id);if(!el)return;const s=el.closest('article')?.querySelector('.sh[data-k]');
+ if(s){io&&io.unobserve(s);await fillSharh(s)}el.scrollIntoView();el.classList.add('flash')}
+function openAsk(id){const q=QI&&QI.all.find(x=>x.id===id);if(!q)return;const a='q/'+id,r=edGet(a),plain=s=>s.replace(/<[^>]+>/g,'');
+ $('sheet').innerHTML=`<h3>Ответ на вопрос</h3><div class="orig">${q.l?q.l+' ':''}${q.t}</div>
+ <label for="edn2">Ваш ответ</label><textarea id="edn2" class="nt">${escP(r?r.note||'':'')}</textarea>
+ <div class="row"><button class="btn pri" data-edsave="${esc(a)}">Сохранить</button><button class="btn" data-edclose>Отмена</button>${r?`<button class="more" data-eddel="${esc(a)}">Убрать ответ</button>`:''}</div>`;
+ $('sheet').dataset.src=`[${q.a.join(', ')}] ${q.l?plain(q.l)+' ':''}${plain(q.t)}`;$('sheet').hidden=false;$('scrim').hidden=false;$('edn2').focus()}
+const QTABS=[['sharh','Шарх',q=>q.s==='шарх'&&!qAns(q)],['perevod','Перевод',q=>q.s==='перевод'&&!qAns(q)],['answered','С ответом',qAns],['all','Все',()=>true]];
+async function questionsPage(f){bar('Вопросы','#/');if(!ED.on)return notfound();await edSync();const{all}=await qIndex();
+ const tab=QTABS.find(x=>x[0]===f)||QTABS[0],list=all.filter(tab[2]);let g='',html='';
+ for(const q of list){if(q.g!==g){g=q.g;html+=`<h2 class="sec">${esc(g)}</h2>`}html+=qItem(q,0)}
+ view.innerHTML=`<div class="bk"><h2>Вопросы к вам</h2></div><p class="intro">Ответ можно дать здесь или под шархом хадиса: ссылка «К месту» ведёт к вопросу. Скажите Claude «забери ответы», и он внесёт их и ответит.</p>
+ <nav class="tabs">${QTABS.map(x=>`<a href="#/questions/${x[0]}"${x===tab?' class="on"':''}>${x[1]} ${fmt(all.filter(x[2]).length)}</a>`).join('')}</nav>
+ <div class="qbox" style="padding-top:4px">${html||'<p class="intro">Здесь пусто.</p>'}</div>`}
+
 /* Редактор. Пока один пользователь: доступ по коду, правки лежат в воркере синхронизации тафсиров.
    Когда появятся аккаунты, как в библиотеке Таухид, код заменит вход, а блок останется тем же. */
 const SYNC='https://tafsir-sync.qaadiy-tafsir.workers.dev/v1/';
@@ -338,10 +376,10 @@ const edTitle=(a,t)=>{const r=ED.on&&edLive(a);return r&&r.new!=null?r.new:t};
 function edBlock(a,html){const r=ED.on&&edLive(a),body=r&&r.new!=null?r.new.split(/\n\s*\n/).map(mdi).join('<br><br>'):html;
  return `<p${edA(a)}${r&&r.new!=null?' class="edited"':''}>${body}${pen(a)}</p>${noteLine(a)}`}
 const edCount=()=>Object.values(ED.all).filter(r=>!r.del&&r.st!=='ok').length;
-const edBar=()=>`<div class="edbar"><span id="edn">Режим редактора. Открытых правок: ${edCount()}</span><a href="#/edits">Все правки</a></div>`;
+const edBar=()=>`<div class="edbar"><span id="edn">Режим редактора. Открытых правок: ${edCount()}</span><span><a href="#/questions">Вопросы</a> · <a href="#/edits">Правки</a></span></div>`;
 function edSource(a){if(!SRC)return null;const p=a.split('/'),[,,x]=p;
  if(x==='ch'){const c=SRC.ch[+p[3]];if(!c)return null;return p[4]==='t'?c.t:c[p[4]][+p[5]]}
- if(x==='q')return SRC.q[+p[3]];const h=SRC.h[x];if(!h)return null;return p[3]==='t'?h.t:h[p[3]][+p[4]]}
+ const h=SRC.h[x];if(!h)return null;return p[3]==='t'?h.t:h[p[3]][+p[4]]}
 function openSheet(a,noteOnly,text){const r=edGet(a),src=noteOnly?text:edSource(a),cur=r&&r.new!=null?r.new:src;
  $('sheet').innerHTML=`<h3>${noteOnly?'Замечание':'Правка'}</h3>
  ${!noteOnly&&r&&r.new!=null?`<div class="orig">Было: ${esc(src)}</div>`:''}${noteOnly&&src?`<div class="orig">${esc(src.slice(0,240))}</div>`:''}
@@ -366,8 +404,8 @@ async function editorEnter(code){bar('Редактор','#/');
  ED.code=code;ED.on=true;wr('edcode',code);await edSync();history.replaceState(null,'','#/');route();toast('Режим редактора включён')}
 async function editsPage(){bar('Правки','#/');if(!ED.on)return notfound();await edSync();
  const rows=Object.entries(ED.all).filter(([,r])=>!r.del).sort((a,b)=>b[1].at.localeCompare(a[1].at));
- const osn=await J('data/osnovy.json').catch(()=>[]);
- const link=a=>{const p=a.split('/');return p[0]==='sharh'?(()=>{const[c,n]=p[1].split('-'),t=CFG.articles.find(x=>x.k===p[1]),o=osn.find(x=>x.k===p[1]);return t?`#/${c}/${t.b}/${n}`:o?`#/osnovy/${o.n}`:'#/'})():`#/${p[0]}/${p[1]}${/^\d/.test(p[2])?'/'+p[2]:''}`};
+ const osn=await J('data/osnovy.json').catch(()=>[]),QX=await qIndex().catch(()=>({all:[]}));
+ const link=a=>{const p=a.split('/');if(p[0]==='q'){const q=QX.all.find(x=>x.id===p[1]);return q?`#/${q.a[0]}/q-${q.id}`:'#/questions'}return p[0]==='sharh'?(()=>{const[c,n]=p[1].split('-'),t=CFG.articles.find(x=>x.k===p[1]),o=osn.find(x=>x.k===p[1]);return t?`#/${c}/${t.b}/${n}`:o?`#/osnovy/${o.n}`:'#/'})():`#/${p[0]}/${p[1]}${/^\d/.test(p[2])?'/'+p[2]:''}`};
  view.innerHTML=`<div class="bk"><h2>Правки</h2></div><p class="intro">Открытых: ${edCount()}. Скажите Claude «забери правки», и он внесёт их в текст.</p>
  <ul class="list">${rows.map(([a,r])=>`<li><a href="${link(a)}"><span class="t">${esc(a)}<small>${r.new!=null?esc(r.new.slice(0,120)):''}${r.note?' Замечание: '+esc(r.note.slice(0,120)):''}${r.reply?' Ответ: '+esc(r.reply.slice(0,120)):''}</small></span><span class="c">${r.st==='ok'?'учтено':'открыто'}</span></a></li>`).join('')||'<li class="empty">Правок пока нет.</li>'}</ul>
  <p class="foot"><a href="#/editor/off">Выключить режим редактора на этом устройстве</a></p>`}
@@ -375,17 +413,17 @@ async function editsPage(){bar('Правки','#/');if(!ED.on)return notfound();
 /* Настройки */
 function srcPanel(){$('src').innerHTML=`<button class="xb" data-x aria-label="Закрыть">×</button><h3>Источники</h3><p>Что показывать под хадисом.</p>
  ${SOURCES.map(s=>`<label class="opt"><input type="checkbox" data-src="${s[0]}"${ST[s[0]]?' checked':''}><span><b>${s[1]}</b><small>${s[2]}</small></span></label>`).join('')}
- ${ED.on?`<div class="sz"><span>Режим редактора включён</span><a class="btn" href="#/edits" style="margin:0">Правки: ${edCount()}</a></div>`:''}<div class="sz"><span>Размер текста</span><button data-fs="-1" aria-label="Меньше">A−</button><button data-fs="1" aria-label="Больше">A+</button></div>`;
+ ${ED.on?`<div class="sz"><span>Режим редактора включён</span><a class="btn" href="#/questions" style="margin:0">Вопросы</a><a class="btn" href="#/edits" style="margin:0">Правки: ${edCount()}</a></div>`:''}<div class="sz"><span>Размер текста</span><button data-fs="-1" aria-label="Меньше">A−</button><button data-fs="1" aria-label="Больше">A+</button></div>`;
  $('src').hidden=false;$('scrim').hidden=false}
 
 /* Навигация */
 const pos={};
 async function route(){hidePanels();
- const h=decodeURIComponent(location.hash.replace(/^#\/?/,'')),[a,b,c]=h.split('/');
+ const h=decodeURIComponent(location.hash.replace(/^#\/?/,'')),[a,b,c,d]=h.split('/');
  try{if(!CFG)CFG=await J('data/config.json');
   if(!a)home();else if(a==='r')await narratorPage(b);else if(a==='search')await searchPage(b||'');else if(a==='about')about();else if(a==='editor')await editorEnter(b);else if(a==='edits')await editsPage();
-  else if(a==='osnovy'){if(b)await osnova(+b);else await osnovy()}
-  else if(CFG.collections.some(x=>x.id===a)){if(b)await book(a,+b,c);else await shelf(a)}else notfound();
+  else if(a==='osnovy'){if(b)await osnova(+b,c);else await osnovy()}else if(a==='questions')await questionsPage(b);
+  else if(CFG.collections.some(x=>x.id===a)){if(b)await book(a,+b,c,d);else await shelf(a)}else notfound();
  }catch(e){console.error(e);view.innerHTML='<div class="empty">Не удалось загрузить данные. Проверьте соединение.<br><button class="btn" onclick="location.reload()">Обновить</button></div>'}
  if(!c)scrollTo(0,pos[location.hash]||0)}
 history.scrollRestoration='manual';
@@ -396,8 +434,9 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){if(cardOn)history.back();els
 document.addEventListener('submit',e=>{const f=e.target;if(f.id!=='sf')return;e.preventDefault();const q=f.q.value.trim();if(q)location.hash='#/search/'+encodeURIComponent(q)});
 document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.oth&&d.open&&!d.dataset.ok){d.dataset.ok=1;fillOther(d)}},true);
 document.addEventListener('change',e=>{const k=e.target.dataset.src;if(!k)return;ST[k]=e.target.checked;wr(k,ST[k]);const y=scrollY;route().then(()=>{srcPanel();scrollTo(0,y)})});
-document.addEventListener('click',e=>{const t=e.target.closest('[data-pen],[data-edsave],[data-eddel],[data-edclose],[data-id],[data-open],[data-link],[data-ar],[data-x],[data-fs],#srcb,#scrim');if(!t)return;
- if(t.dataset.pen){e.preventDefault();e.stopPropagation();const box=t.closest('[data-ed]');openSheet(t.dataset.pen,'note'in box.dataset,'note'in box.dataset?box.textContent.replace('✎','').trim():null)}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-ask],[data-pen],[data-edsave],[data-eddel],[data-edclose],[data-id],[data-open],[data-link],[data-ar],[data-x],[data-fs],#srcb,#scrim');if(!t)return;
+ if(t.dataset.ask)openAsk(t.dataset.ask);
+ else if(t.dataset.pen){e.preventDefault();e.stopPropagation();const box=t.closest('[data-ed]');openSheet(t.dataset.pen,'note'in box.dataset,'note'in box.dataset?box.textContent.replace('✎','').trim():null)}
  else if(t.dataset.edsave)edSave(t.dataset.edsave);
  else if(t.dataset.eddel)edDel(t.dataset.eddel);
  else if('edclose'in t.dataset)hidePanels();

@@ -5,7 +5,7 @@
 
     python3 собрать.py
 """
-import collections, glob, html, json, os, re, shutil
+import collections, glob, hashlib, html, json, os, re, shutil
 from подготовить import книги
 
 ЗДЕСЬ = os.path.dirname(os.path.abspath(__file__))
@@ -86,8 +86,7 @@ def перевод_книги(путь):
             вопросы = []
             continue
         if вопросы is not None:
-            if м := re.match(r'\d+\.\s+(.+)', с):
-                вопросы.append(м.group(1))
+            вопросы.append(строка.rstrip('\n'))
             continue
         if not с or с.startswith('# '):
             continue
@@ -312,7 +311,7 @@ def собрать_сборник(сб, шарх, имена, люди_всег�
             'names': имена_книги(в_книге, имена)})
         писать(f'{сб["id"]}/{н:02}.t.json', такхридж)
         if рус:
-            писать(f'{сб["id"]}/{н:02}.src.json', {'q': вопросы,
+            писать(f'{сб["id"]}/{н:02}.src.json', {
                 'ch': [{'t': г['t'], 'src': г['src'], 'intro': г['intro_src'], 'fn': г['fn_src']} for г in рус],
                 'h': {х['n']: {'t': х['t'], 'ru': х['ru_src'], 'fn': х['fn_src']} for г in рус for х in г['h']}})
         с_шархом = sum(1 for г in главы for х in г['h'] if х.get('s'))
@@ -350,6 +349,105 @@ def полка_основ(шарх, статьи):
     return {'total': len(полка), 'ready': sum(1 for з in полка if з.get('s'))}
 
 
+РЕФ = r'(?:jami-\d+|\d+[бм]?(?:[–-]\d+[бм]?)?)'
+
+
+def пункты(строки):
+    """Пункты списка вопросов: «1. текст», «- 886: текст», вложенные «  - текст» (наследуют номера родителя «- 876:»),
+    продолжение строки с отступом. Возвращает [(текст, номер строки)]."""
+    итог, голова = [], ''
+    for i, строка in enumerate(строки):
+        if м := re.match(r'(?:\d+\.|-)\s+(.+)', строка):
+            т = м.group(1).strip()
+            м2 = re.fullmatch(r'([^:]{1,40}):', т)
+            голова = м2.group(1) if м2 else (re.match(rf'({РЕФ}(?:,\s*{РЕФ})*):', т) or [None, ''])[1]
+            if not м2:
+                итог.append([т, i])
+        elif м := re.match(r'\s+-\s+(.+)', строка):
+            итог.append([f'{голова}: {м.group(1).strip()}' if голова else м.group(1).strip(), i])
+        elif строка.startswith('  ') and строка.strip() and итог:
+            итог[-1][0] += ' ' + строка.strip()
+    return итог
+
+
+def ссылки(т):
+    """(номера, текст для показа): номера в начале пункта («886, 904–905: …», «Хадисы 60 и 96. …»), иначе в скобках «(644)»."""
+    м = re.match(rf'(Хадис[ыа]?\s+|Заглавие перед хадисом\s+|Глава перед хадисом\s+)?({РЕФ}(?:(?:\s*,\s*|\s+и\s+){РЕФ})*)(?![\d/])\s*(:?)\s*(.*)', т, re.S)
+    if м:
+        номера = re.findall(РЕФ, м.group(2))
+        return номера, м.group(4) if м.group(3) and not м.group(1) else т
+    return [н for г in re.findall(rf'\(({РЕФ}(?:,\s*{РЕФ})*)\)', т) for н in re.findall(РЕФ, г)], т
+
+
+def вопросы_хозяину(заголовки, книги_ру):
+    """Вопросы из ясный-шарх/вопросы-хозяину.md и из «## Вопросы» переводов → data/questions.json для режима редактора.
+    Номер хадиса привязывает вопрос к статье (под шархом), без номера вопрос относится ко всей книге."""
+    def место(р):
+        if р.startswith('jami-'):
+            н = int(р[5:])
+            return ('tirmidhi-2317' if н == 12 else р), f'osnovy/{н}', 1000, н
+        if '–' in р or '-' in р:
+            return None
+        н = р if р in заголовки else р.rstrip('бм')
+        if н not in заголовки:
+            return None
+        return f'bukhari-{н}', f'bukhari/{заголовки[н][0]}/{н}', заголовки[н][0], int(re.match(r'\d+', н).group())
+
+    def развернуть(номера):
+        итог = []
+        for р in номера:
+            if м := re.fullmatch(r'(\d+)[–-](\d+)', р):
+                а, б = int(м.group(1)), int(м.group(2))
+                итог += [str(н) for н in range(а, б + 1)] if 0 < б - а <= 30 else [м.group(1), м.group(2)]
+            else:
+                итог.append(р)
+        return итог
+
+    сырые = []  # (источник, книга по умолчанию, раздел, вводная, текст)
+    строки = open(f'{ЗДЕСЬ}/ясный-шарх/вопросы-хозяину.md', encoding='utf-8').read().split('\n')
+    for т, i in пункты(строки):
+        # раздел «##» и книга «# … (номер–…)» — ближайшие выше пункта; вводная — абзац с двоеточием перед списком
+        выше = [с for с in строки[:i] if с.startswith('#')]
+        раздел = выше[-1][3:].strip() if выше and выше[-1].startswith('## ') else ''
+        гл = next((с for с in reversed(выше) if с.startswith('# ')), '')
+        м = re.search(r'\((\d+)', гл)
+        книга = заголовки[м.group(1)][0] if м and м.group(1) in заголовки else None
+        вводная = ''
+        for с in reversed(строки[:i]):
+            if с.startswith('#'):
+                break
+            if с.strip().endswith(':') and not с.startswith(('-', ' ')):
+                вводная = с.strip()
+                break
+        сырые.append(('шарх', книга, раздел or 'Вопрос', вводная, т))
+    for н in range(1, len(книги_ру) + 1):
+        путь = f'{ЗДЕСЬ}/перевод/бухари/{н:02}.md'
+        if os.path.exists(путь):
+            строки = open(путь, encoding='utf-8').read().split('\n')
+            нач = next((i for i, с in enumerate(строки) if с.startswith('## Вопросы')), None)
+            if нач is not None:
+                сырые += [('перевод', н, 'Вопрос переводчика', '', т) for т, _ in пункты(строки[нач + 1:])]
+    итог, было = [], collections.Counter()
+    for ист, книга, раздел, вводная, т in сырые:
+        номера, показ = ссылки(т)
+        места = [м for м in map(место, развернуть(номера)) if м]
+        места = list({м[0]: м for м in места}.values())
+        ид = hashlib.sha1(f'{ист}|{т}'.encode()).hexdigest()[:10]
+        было[ид] += 1
+        ид += '' if было[ид] == 1 else f'-{было[ид]}'
+        порядок = (места[0][2], места[0][3]) if места else ((книга or 2000), 10**6)
+        гр = 'Пятьдесят основ' if порядок[0] == 1000 else f'Книга {порядок[0]}. {книги_ру[порядок[0] - 1]}' \
+            if порядок[0] <= len(книги_ру) else 'Общие вопросы'
+        итог.append({'id': ид, 's': ист, 'c': раздел, 'l': инлайн(вводная), 't': инлайн(показ.strip()),
+                     'h': [м[0] for м in места], 'a': [м[1] for м in места] or ([f'bukhari/{книга}'] if книга else []),
+                     'g': гр, 'o': порядок})
+    итог.sort(key=lambda в: в['o'])
+    for в in итог:
+        del в['o']
+    писать('questions.json', итог)
+    return len(итог)
+
+
 шарх = статьи_шарха()
 имена = {}
 п = f'{ИСНАД}/данные/имена-ру.json'
@@ -362,7 +460,10 @@ for сб in СБОРНИКИ:
     итог.append(с)
     все_статьи += ст
 карточки(люди, хадисы_людей, имена)
-писать('config.json', {'collections': итог, 'articles': все_статьи, 'osnovy': полка_основ(шарх, все_статьи)})
+заголовки = json.load(open(f'{ВЫХОД}/bukhari/titles.json', encoding='utf-8'))
+книги_ру = json.load(open(f'{ЗДЕСЬ}/перевод/бухари/книги.json', encoding='utf-8'))
+писать('config.json', {'collections': итог, 'articles': все_статьи, 'osnovy': полка_основ(шарх, все_статьи),
+    'questions': вопросы_хозяину(заголовки, книги_ру)})
 print(json.dumps(итог, ensure_ascii=False))
 print('передатчиков', len(люди), 'с русским именем', sum(str(и) in имена for и in люди))
 print('размер data, МБ', round(sum(os.path.getsize(ф) for ф in glob.glob(f'{ВЫХОД}/**/*', recursive=True) if os.path.isfile(ф)) / 1e6, 1))
