@@ -55,9 +55,11 @@ def источники():
 def переводы():
     итог = {}
     for ф in sorted(glob.glob(f'{КОРЕНЬ}/data/bukhari/[0-9][0-9].json')):
+        # в непереведённой книге «ru» у хадиса — строка «Перевод:» его статьи, а не перевод книги
+        своя_книга = os.path.exists(f'{КОРЕНЬ}/перевод/бухари/{os.path.basename(ф)[:2]}.md')
         for гл in json.load(open(ф, encoding='utf-8'))['ch']:
             for х in гл['h']:
-                итог[х['n']] = ' '.join(х.get('ru', []))
+                итог[х['n']] = ' '.join(х.get('ru', [])) if своя_книга else ''
                 заглавия[х['n']] = х.get('t', '')
     return итог
 
