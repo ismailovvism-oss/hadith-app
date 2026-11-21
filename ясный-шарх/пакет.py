@@ -377,7 +377,7 @@ def отправить_перевод(кн, выбранные=None):
     сис = система_перевода(кн)
     номера_частей = выбранные or list(range(1, len(части) + 1))
     запросы = [{'custom_id': f'p{кн:02}-{н:02}', 'params': {
-        'model': МОДЕЛЬ, 'max_tokens': 64000, 'output_config': {'effort': УСИЛИЕ_ПЕРЕВОДА}, 'system': сис,
+        'model': МОДЕЛЬ, 'max_tokens': 128000, 'output_config': {'effort': УСИЛИЕ_ПЕРЕВОДА}, 'system': сис,
         'messages': [{'role': 'user', 'content': сообщение_перевода(кн, н, части[н - 1], len(части), готовое, имена, первый)}]}}
         for н in номера_частей]
     пакет = клиент().messages.batches.create(requests=запросы)
