@@ -6,6 +6,8 @@
     python3 правки.py                        # показать открытые
     python3 правки.py применить [--проба]    # внести текстовые правки в перевод/, замечания остаются открытыми
     python3 правки.py ответ <адрес> "текст"  # ответить на замечание и закрыть его
+    python3 правки.py --тестировщик …        # то же для замечаний тестировщика (код в данные/код-тестировщика.txt,
+                                             # вход на сайте: #/tester/<код>; он оставляет только замечания)
 
 После «применить» запустить собрать.py.
 """
@@ -13,7 +15,10 @@ import datetime, json, os, re, sys, urllib.request
 
 ЗДЕСЬ = os.path.dirname(os.path.abspath(__file__))
 СИНК = 'https://tafsir-sync.qaadiy-tafsir.workers.dev/v1/'
-КОД = os.environ.get('HADITH_EDIT_CODE') or open(f'{ЗДЕСЬ}/данные/код-редактора.txt').read().strip()
+ТЕСТИРОВЩИК = '--тестировщик' in sys.argv
+if ТЕСТИРОВЩИК:
+    sys.argv.remove('--тестировщик')
+КОД = os.environ.get('HADITH_EDIT_CODE') or open(f'{ЗДЕСЬ}/данные/код-{"тестировщика" if ТЕСТИРОВЩИК else "редактора"}.txt').read().strip()
 UA = {'User-Agent': 'Mozilla/5.0 hadith-app', 'Content-Type': 'application/json'}
 ПАПКИ = {'bukhari': 'бухари'}
 
